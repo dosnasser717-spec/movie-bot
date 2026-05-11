@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExoticN9 | عالم الترفيه</title>
+    <title>ExoticN9 | تجربة بدون إعلانات</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -26,21 +26,15 @@
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             display: flex; align-items: center; justify-content: space-between;
             padding: 15px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            transition: 0.3s;
         }
         
         .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        .menu-toggle {
-            cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1100;
-        }
-        .menu-toggle span {
-            display: block; width: 28px; height: 3px; background: white; border-radius: 2px;
-            transition: 0.3s;
-        }
+        .menu-toggle { cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1100; padding: 10px;}
+        .menu-toggle span { display: block; width: 28px; height: 3px; background: white; border-radius: 2px; transition: 0.3s; }
 
-        /* القائمة الجانبية */
+        /* Side Menu */
         .side-menu {
             position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
             background: var(--nav-bg); z-index: 1050; display: flex; flex-direction: column;
@@ -49,48 +43,47 @@
         }
         .side-menu.active { right: 0; }
 
-        /* خانة البحث داخل القائمة */
         .search-container { margin-bottom: 25px; }
         .search-container input {
-            width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05); color: white; font-family: 'Cairo'; font-size: 0.9rem;
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); color: white; font-family: 'Cairo';
         }
 
         .side-menu a {
-            color: white; text-decoration: none; font-size: 1.2rem; font-weight: 600;
-            margin-bottom: 25px; transition: 0.3s; display: block;
-            border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;
+            color: white; text-decoration: none; font-size: 1.1rem; font-weight: 600;
+            margin-bottom: 20px; transition: 0.3s; display: block; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .side-menu a:hover { color: var(--accent); padding-right: 10px; }
 
-        .overlay-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 1040; display: none;
-            backdrop-filter: blur(4px);
-        }
+        .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1040; display: none; backdrop-filter: blur(4px); }
 
-        /* Hero & Content */
-        .hero { height: 65vh; width: 100%; background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 5%; position: relative; }
-        .hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 200px; background: linear-gradient(to top, var(--bg), transparent); }
-        .hero-info { position: relative; z-index: 2; max-width: 550px; }
-        .hero-info h1 { font-size: 2rem; font-weight: 800; margin-bottom: 15px; }
-        .hero-play-btn { display: inline-flex; align-items: center; gap: 10px; background: white; color: black; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        /* Hero */
+        .hero { height: 60vh; width: 100%; background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 5%; position: relative; }
+        .hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: linear-gradient(to top, var(--bg), transparent); }
+        .hero-info { position: relative; z-index: 2; max-width: 500px; }
+        .hero-info h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .hero-play-btn { display: inline-flex; align-items: center; gap: 10px; background: white; color: black; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .hero-play-btn:hover { background: var(--accent); color: white; transform: scale(1.05); }
 
+        /* Rows & Cards */
         .row { padding: 0 0 0 5%; margin-bottom: 30px; scroll-margin-top: 80px; }
-        .row h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
+        .row h2 { font-size: 1rem; font-weight: 700; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
         .posters-container { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none; }
-        
+        .posters-container::-webkit-scrollbar { display: none; }
+
         .movie-card { min-width: 130px; position: relative; border-radius: 12px; overflow: hidden; transition: 0.3s; cursor: pointer; }
         .movie-card img { width: 100%; display: block; height: 190px; object-fit: cover; }
-        .movie-card:hover img { transform: scale(1.08); filter: blur(1px); }
-        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(229,9,20,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
         .movie-card:hover .card-overlay { opacity: 1; }
-        .play-icon { background: white; color: black; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 10; }
+        .play-icon { background: var(--accent); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 15px var(--accent); }
 
+        /* Modal Player */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
         iframe { width: 100%; height: 100%; border: none; }
-        .close-btn { padding: 15px; color: white; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
+        .close-btn { padding: 15px; color: white; cursor: pointer; background: #111; text-align: center; font-weight: bold; font-size: 1.1rem; }
+
+        .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 10; }
     </style>
 </head>
 <body>
@@ -105,9 +98,8 @@
 <div class="overlay-bg" id="overlay" onclick="toggleMenu()"></div>
 <div class="side-menu" id="sideMenu">
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="بحث عن فيلم أو مسلسل..." oninput="searchMedia(this.value)">
+        <input type="text" id="searchInput" placeholder="ابحث هنا..." oninput="searchMedia(this.value)">
     </div>
-    
     <a href="#" onclick="toggleMenu()">الرئيسية</a>
     <a href="#search-section" onclick="toggleMenu()">بحث</a>
     <a href="#movies-2026" onclick="toggleMenu()">الأفلام</a>
@@ -117,7 +109,7 @@
 
 <section class="hero" id="hero-section">
     <div class="hero-info">
-        <h1 id="hero-title">جاري التحميل...</h1>
+        <h1 id="hero-title">تحميل...</h1>
         <div id="hero-play-container"></div>
     </div>
 </section>
@@ -129,7 +121,7 @@
     </div>
 
     <div class="row" id="history-section" style="display:none;">
-        <h2 style="font-size: 0.9rem; color: #aaa; border: none;">تابع من حيث توقفت 🕒</h2>
+        <h2 style="font-size: 0.9rem; color: #aaa; border: none;">تابع المشاهدة 🕒</h2>
         <div class="posters-container" id="history-row" style="gap: 8px;"></div>
     </div>
 
@@ -139,12 +131,12 @@
     </div>
 
     <div class="row" id="tv-section">
-        <h2>المسلسلات الأعلى مشاهدة 📈</h2>
+        <h2>المسلسلات الأكثر طلباً 📈</h2>
         <div class="posters-container" id="top-tv-row"></div>
     </div>
 
     <div class="row" id="trending-section">
-        <h2>الأكثر شهرة الآن 🔥</h2>
+        <h2>ترند اليوم 🔥</h2>
         <div class="posters-container" id="trending-row"></div>
     </div>
 
@@ -155,7 +147,7 @@
 </main>
 
 <div class="modal" id="videoModal">
-    <div class="close-btn" onclick="closePlayer()">✕ إغلاق</div>
+    <div class="close-btn" onclick="closePlayer()">✕ إغلاق المشغل</div>
     <div id="player-container" style="flex:1;"></div>
 </div>
 
@@ -171,7 +163,14 @@
         overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
     }
 
-    // وظيفة البحث
+    // السيرفر الجديد النظيف (VidLink)
+    function getPlayerURL(id, type) {
+        if (type === 'tv') {
+            return `https://vidlink.pro/embed/tv/${id}/1/1?primaryColor=ff003c`;
+        }
+        return `https://vidlink.pro/embed/movie/${id}?primaryColor=ff003c`;
+    }
+
     async function searchMedia(query) {
         const section = document.getElementById('search-section');
         const row = document.getElementById('search-row');
@@ -215,12 +214,13 @@
     function updateHero(m, type) {
         document.getElementById('hero-section').style.backgroundImage = `url(${B_IMG + m.backdrop_path})`;
         document.getElementById('hero-title').innerText = m.title || m.name;
-        document.getElementById('hero-play-container').innerHTML = `<div class="hero-play-btn" onclick="openPlayer(${m.id}, '${type}', '${m.poster_path}')">▶ مشاهدة الآن</div>`;
+        document.getElementById('hero-play-container').innerHTML = `<div class="hero-play-btn" onclick="openPlayer(${m.id}, '${type}', '${m.poster_path}')">▶ شاهد الآن مجاناً</div>`;
     }
 
     function openPlayer(id, type, poster) {
         document.getElementById('videoModal').style.display = 'flex';
-        document.getElementById('player-container').innerHTML = `<iframe src="https://vidsrc.me/embed/${type}?tmdb=${id}" allowfullscreen></iframe>`;
+        const url = getPlayerURL(id, type);
+        document.getElementById('player-container').innerHTML = `<iframe src="${url}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
         saveHistory(id, type, poster);
     }
 
@@ -228,7 +228,7 @@
         let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         history = history.filter(h => h.id !== id);
         history.unshift({id, type, poster});
-        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,15)));
+        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,12)));
         loadHistory();
     }
 
@@ -250,8 +250,9 @@
             history.forEach(m => {
                 const card = document.createElement('div');
                 card.className = 'movie-card mini';
+                card.style.minWidth = '100px';
                 card.onclick = () => openPlayer(m.id, m.type, m.poster);
-                card.innerHTML = `<div class="remove-btn" onclick="removeFromHistory(event, ${m.id})">✕</div><img src="${IMG + m.poster}"><div class="card-overlay"><div class="play-icon">▶</div></div>`;
+                card.innerHTML = `<div class="remove-btn" onclick="removeFromHistory(event, ${m.id})">✕</div><img src="${IMG + m.poster}" style="height:140px"><div class="card-overlay"><div class="play-icon" style="width:30px; height:30px; font-size:0.8rem">▶</div></div>`;
                 row.appendChild(card);
             });
         } else { section.style.display = 'none'; }
@@ -265,7 +266,7 @@
     window.onload = () => {
         loadHistory();
         fetchList('/discover/movie?primary_release_year=2026&sort_by=popularity.desc', '2026-row');
-        fetchList('/tv/top_rated?', 'top-tv-row', 'tv');
+        fetchList('/tv/popular?', 'top-tv-row', 'tv');
         fetchList('/trending/all/day?', 'trending-row');
         fetchList('/discover/movie?with_genres=16', 'anime-row');
     };
