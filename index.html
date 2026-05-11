@@ -1,27 +1,208 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movie Bot</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Bot | عالمك للترفيه</title>
+    <style>
+        :root {
+            --primary-color: #e50914; /* أحمر نيتفليكس للجمالية */
+            --bg-color: #0b0e11;
+            --card-bg: #1a1d23;
+            --text-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* الهيدر وشريط البحث */
+        header {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            padding: 40px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .search-box {
+            padding: 12px 25px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            background: #2c2f34;
+            color: white;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+        }
+
+        /* أزرار التحكم (أفلام / مسلسلات) */
+        .nav-buttons {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            background: var(--card-bg);
+            color: white;
+            border: 1px solid #333;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn.active, .btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* شبكة العرض */
+        #content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 25px;
+            padding: 20px 5%;
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            transition: 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .item-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .item-card img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+        }
+
+        .item-info {
+            padding: 12px;
+        }
+
+        .item-info h3 {
+            margin: 0;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge {
+            background: rgba(0,0,0,0.6);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            color: #ffc107;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+    </style>
 </head>
 <body>
 
-<header class="navbar">
-  <h1>🎬 Movie Bot</h1>
-  <input type="text" id="search" placeholder="ابحث عن فيلم أو مسلسل...">
+<header>
+    <h1>MOVIE BOT 🤖</h1>
+    <input type="text" id="search" class="search-box" placeholder="ابحث عن فيلم، مسلسل، أو أنمي...">
+    
+    <div class="nav-buttons">
+        <button class="btn active" onclick="loadContent('movie', this)">الأفلام</button>
+        <button class="btn" onclick="loadContent('tv', this)">المسلسلات</button>
+    </div>
 </header>
 
-<div id="movies" class="grid"></div>
+<main id="content-grid">
+    </main>
 
-<div id="modal" class="modal hidden">
-  <div class="modal-content">
-    <span id="close">&times;</span>
-    <div id="modal-body"></div>
-  </div>
-</div>
+<script>
+    const API_KEY = 'YOUR_TMDB_API_KEY'; // ضع مفتاحك هنا
+    const BASE_URL = 'https://api.themoviedb.org/3';
+    const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 
-<script src="bot.js"></script>
+    const grid = document.getElementById('content-grid');
+    const search = document.getElementById('search');
+    let currentType = 'movie';
+
+    // الوظيفة الأساسية لجلب البيانات
+    async function loadContent(type, btnElement) {
+        currentType = type;
+        
+        // تحديث شكل الأزرار
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        const res = await fetch(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&language=ar&sort_by=popularity.desc`);
+        const data = await res.json();
+        renderItems(data.results);
+    }
+
+    // عرض العناصر في الصفحة
+    function renderItems(items) {
+        grid.innerHTML = '';
+        items.forEach(item => {
+            const title = item.title || item.name; // للأفلام title وللمسلسلات name
+            if (!item.poster_path) return;
+
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.innerHTML = `
+                <span class="badge">⭐ ${item.vote_average.toFixed(1)}</span>
+                <img src="${IMG_PATH + item.poster_path}" alt="${title}">
+                <div class="item-info">
+                    <h3>${title}</h3>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // البحث
+    search.addEventListener('input', async (e) => {
+        const term = e.target.value;
+        if (term && term.trim() !== '') {
+            const res = await fetch(`${BASE_URL}/search/${currentType}?api_key=${API_KEY}&language=ar&query=${term}`);
+            const data = await res.json();
+            renderItems(data.results);
+        } else {
+            loadContent(currentType, document.querySelector('.btn.active'));
+        }
+    });
+
+    // تحميل الأفلام عند فتح الموقع لأول مرة
+    window.onload = () => {
+        loadContent('movie', document.querySelector('.btn'));
+    };
+</script>
+
 </body>
 </html>
