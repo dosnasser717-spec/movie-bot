@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Movie Bot | عالم الترفيه</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>Movie Bot | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-red: #e50914;
             --dark-bg: #06090f;
-            --card-bg: #141414;
+            --card-bg: #1a1d23;
+            --text-gray: #b3b3b3;
         }
 
-        /* إصلاح مشكلة العرض */
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -23,108 +24,129 @@
             color: white;
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* يمنع الصفحة من التحرك يميناً ويساراً */
+            overflow-x: hidden;
             width: 100%;
         }
 
-        /* شريط التنقل - تم إصلاحه ليكون متوافقاً 100% */
+        /* Navbar - Glass Effect */
         nav {
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(6, 9, 15, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 15px;
+            padding: 12px 20px;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
+            top: 0; left: 0; right: 0;
             z-index: 1000;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .nav-links { 
             display: flex; 
             gap: 15px; 
             list-style: none; 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             overflow-x: auto;
             white-space: nowrap;
-            max-width: 70%; /* لترك مساحة للوجو */
         }
         
         .nav-links::-webkit-scrollbar { display: none; }
 
         .nav-links a { 
-            color: #bbb; 
+            color: var(--text-gray); 
             text-decoration: none; 
-            font-size: 0.75rem;
-            font-weight: bold;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.3s;
         }
 
-        /* الهيدر والبحث */
+        .nav-links a:hover, .nav-links a.active { color: white; }
+
+        /* Hero Header */
         header {
             text-align: center;
-            padding: 90px 15px 20px;
-            background: linear-gradient(to bottom, #141414, transparent);
+            padding: 100px 20px 30px;
+            background: linear-gradient(to bottom, #141414, var(--dark-bg));
         }
 
         .logo { 
-            font-size: 1.6rem; 
-            font-weight: bold; 
+            font-size: 1.8rem; 
+            font-weight: 700; 
             color: var(--primary-red); 
-            margin-bottom: 15px; 
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         .search-box {
-            padding: 10px 15px; 
+            padding: 12px 20px; 
             width: 100%; 
-            max-width: 350px;
-            border-radius: 20px; 
-            border: 1px solid #333;
-            background: #1a1d23; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #12151d; 
             color: white; 
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             text-align: center;
+            outline: none;
+            transition: 0.3s;
         }
 
-        /* الصفوف - تم ضبطها لتكون داخل إطار الشاشة */
+        .search-box:focus {
+            border-color: var(--primary-red);
+            background: #1a1d27;
+        }
+
+        /* Sections Styling */
         .row { 
-            padding: 0 15px; 
-            margin-bottom: 25px; 
+            padding: 0 0 0 20px; /* ترك مساحة يمين للحواف */
+            margin-bottom: 30px; 
             width: 100%;
         }
         
         .row h2 { 
-            font-size: 0.95rem; 
-            margin-bottom: 12px; 
-            border-right: 3px solid var(--primary-red); 
-            padding-right: 8px; 
+            font-size: 1rem; 
+            margin-bottom: 15px; 
+            font-weight: 700;
+            color: #fff;
+            padding-right: 15px;
+            border-right: 3px solid var(--primary-red);
         }
         
         .posters-container {
             display: flex; 
             overflow-x: auto; 
             gap: 12px; 
-            padding-bottom: 10px;
+            padding: 5px 0 15px;
             width: 100%;
             -webkit-overflow-scrolling: touch;
         }
         .posters-container::-webkit-scrollbar { display: none; }
 
         .movie-card { 
-            min-width: 105px; /* حجم مثالي للجوال */
-            max-width: 105px;
+            min-width: 115px;
+            max-width: 115px;
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
+        .movie-card:active { transform: scale(0.95); }
+
         .movie-card img { 
             width: 100%; 
-            border-radius: 8px; 
+            border-radius: 12px; 
             display: block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            background: #1a1d23; /* لون مؤقت حتى تحمل الصورة */
         }
 
-        /* المشغل - ملء الشاشة للجوال */
+        /* Player Modal */
         .modal {
             display: none; 
             position: fixed; 
@@ -135,42 +157,30 @@
             flex-direction: column;
         }
         
-        .modal-content { 
-            width: 100%; 
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        iframe { width: 100%; height: 80%; border: none; }
-        
-        .close-btn { 
-            padding: 15px;
-            color: white; 
-            font-size: 30px; 
-            cursor: pointer; 
-            align-self: flex-start;
-        }
+        .modal-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        iframe { width: 100%; height: 85%; border: none; }
+        .close-btn { padding: 20px; color: white; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
 
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo" style="font-size: 1.2rem;">BOT</div>
+    <div class="logo" style="font-size: 1.3rem;">BOT</div>
     <ul class="nav-links">
-        <li><a href="#trending">أحدث الأفلام</a></li>
-        <li><a href="#movies">الأفلام</a></li>
-        <li><a href="#tv">المسلسلات</a></li>
-        <li><a href="#anime">الأنمي</a></li>
-        <li><a href="#horror">الرعب</a></li>
+        <li><a href="#trending">الرئيسية</a></li>
+        <li><a href="#movies">أفلام</a></li>
+        <li><a href="#tv">مسلسلات</a></li>
+        <li><a href="#anime">أنمي</a></li>
+        <li><a href="#horror">رعب</a></li>
     </ul>
 </nav>
 
 <header>
     <div class="logo">🤖 MOVIE BOT</div>
-    <input type="text" id="search" class="search-box" placeholder="ابحث هنا...">
+    <div class="search-container">
+        <input type="text" id="search" class="search-box" placeholder="ابحث عن عنوانك القادم...">
+    </div>
 </header>
 
 <main>
@@ -180,7 +190,7 @@
     </div>
 
     <div class="row" id="trending">
-        <h2>أحدث الأفلام والتريند 🔥</h2>
+        <h2>أحدث الإضافات 🔥</h2>
         <div class="posters-container" id="trending-row"></div>
     </div>
 
@@ -190,23 +200,23 @@
     </div>
 
     <div class="row" id="tv">
-        <h2>المسلسلات 📺</h2>
+        <h2>المسلسلات الأكثر شهرة 📺</h2>
         <div class="posters-container" id="tv-row"></div>
     </div>
 
     <div class="row" id="anime">
-        <h2>عالم الأنمي 🐉</h2>
+        <h2>عالم الأنمي والكرتون 🐉</h2>
         <div class="posters-container" id="anime-row"></div>
     </div>
 
     <div class="row" id="horror">
-        <h2>أفلام الرعب 👻</h2>
+        <h2>أفلام الرعب والغموض 👻</h2>
         <div class="posters-container" id="horror-row"></div>
     </div>
 </main>
 
 <div class="modal" id="videoModal">
-    <span class="close-btn" onclick="closePlayer()">✕ إغلاق</span>
+    <span class="close-btn" onclick="closePlayer()">✕ رجوع</span>
     <div class="modal-content">
         <div id="player-container" style="width: 100%; height: 100%;"></div>
     </div>
@@ -216,8 +226,9 @@
     const API_KEY = 'c2a4565c270e6801828b769a89614135';
     const BASE_URL = 'https://api.themoviedb.org/3';
 
+    // تم إضافة page=1 و page=2 لزيادة عدد النتائج في الصف الواحد
     async function fetchRow(url, elementId, type = 'movie') {
-        const res = await fetch(`${BASE_URL}${url}&api_key=${API_KEY}&language=ar`);
+        const res = await fetch(`${BASE_URL}${url}&api_key=${API_KEY}&language=ar&page=1`);
         const data = await res.json();
         renderMovies(data.results, elementId, type);
     }
@@ -229,16 +240,17 @@
             const card = document.createElement('div');
             card.className = 'movie-card';
             card.onclick = () => openPlayer(item.id, type, item.poster_path, item.title || item.name);
-            card.innerHTML = `<img src="https://image.tmdb.org/t/p/w185${item.poster_path}" alt="movie">`;
+            card.innerHTML = `<img src="https://image.tmdb.org/t/p/w342${item.poster_path}" alt="movie" loading="lazy">`;
             container.appendChild(card);
         });
     }
 
+    // نظام التاريخ (متابعة المشاهدة)
     function addToHistory(id, type, poster, title) {
         let history = JSON.parse(localStorage.getItem('movieHistory')) || [];
         history = history.filter(item => item.id !== id);
         history.unshift({ id, type, poster, title });
-        localStorage.setItem('movieHistory', JSON.stringify(history.slice(0, 10)));
+        localStorage.setItem('movieHistory', JSON.stringify(history.slice(0, 15)));
         loadHistory();
     }
 
@@ -253,7 +265,7 @@
                 const card = document.createElement('div');
                 card.className = 'movie-card';
                 card.onclick = () => openPlayer(item.id, item.type, item.poster, item.title);
-                card.innerHTML = `<img src="https://image.tmdb.org/t/p/w185${item.poster}">`;
+                card.innerHTML = `<img src="https://image.tmdb.org/t/p/w342${item.poster}">`;
                 container.appendChild(card);
             });
         }
