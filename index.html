@@ -25,28 +25,41 @@
         nav {
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 15px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            transition: 0.3s;
+            padding: 20px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
         }
         
-        .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; text-decoration: none; }
+        .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; text-decoration: none; z-index: 1100; }
         .logo span { color: var(--accent); }
 
-        /* زر الثلاث شرطات */
+        /* زر الثلاث شرطات - تم التأكيد على ظهوره */
         .menu-toggle {
-            cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1100;
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+            z-index: 1200; /* رفع الطبقة لضمان الظهور */
+            padding: 10px;
         }
         .menu-toggle span {
-            display: block; width: 28px; height: 3px; background: white; border-radius: 2px;
-            transition: 0.3s;
+            display: block; 
+            width: 30px; 
+            height: 3px; 
+            background-color: #ffffff; 
+            border-radius: 4px;
+            transition: 0.3s ease;
         }
 
-        /* القائمة الجانبية المنسدلة */
+        /* تحويل الشرطات إلى X عند الفتح */
+        .menu-toggle.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.open span:nth-child(2) { opacity: 0; }
+        .menu-toggle.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+        /* القائمة الجانبية */
         .side-menu {
             position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
             background: var(--nav-bg); z-index: 1050; display: flex; flex-direction: column;
-            padding: 80px 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            padding: 100px 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
         }
         .side-menu.active { right: 0; }
 
@@ -57,47 +70,31 @@
         }
         .side-menu a:hover { color: var(--accent); padding-right: 10px; }
 
-        /* خلفية ضبابية عند فتح القائمة */
         .overlay-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 1040; display: none;
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.7); z-index: 1040; display: none;
+            backdrop-filter: blur(5px);
         }
 
-        /* Hero & Content */
-        .hero {
-            height: 65vh; width: 100%; background-size: cover; background-position: center;
-            display: flex; align-items: center; padding: 0 5%; position: relative;
-        }
+        /* باقي التصميم (Hero & Cards) */
+        .hero { height: 60vh; width: 100%; background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 5%; position: relative; }
         .hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 200px; background: linear-gradient(to top, var(--bg), transparent); }
-        .hero-info { position: relative; z-index: 2; max-width: 550px; }
-        .hero-info h1 { font-size: 2rem; font-weight: 800; margin-bottom: 15px; }
+        .hero-info { position: relative; z-index: 2; }
+        .hero-info h1 { font-size: 1.8rem; margin-bottom: 15px; }
+        .hero-play-btn { display: inline-flex; align-items: center; gap: 8px; background: white; color: black; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
-        .hero-play-btn {
-            display: inline-flex; align-items: center; gap: 10px; background: white; color: black;
-            padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s;
-        }
-        .hero-play-btn:hover { background: var(--accent); color: white; }
-
-        /* Rows */
-        .row { padding: 0 0 0 5%; margin-bottom: 30px; scroll-margin-top: 80px; }
-        .row h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
+        .row { padding: 0 0 0 5%; margin-bottom: 30px; scroll-margin-top: 90px; }
+        .row h2 { font-size: 1.1rem; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
         .posters-container { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none; }
-        .posters-container::-webkit-scrollbar { display: none; }
-
-        /* Movie Cards */
-        .movie-card { min-width: 130px; position: relative; border-radius: 12px; overflow: hidden; transition: 0.3s; cursor: pointer; box-shadow: 0 8px 15px rgba(0,0,0,0.4); }
-        .movie-card.mini { min-width: 85px; max-width: 85px; border-radius: 6px; }
-        .movie-card img { width: 100%; display: block; transition: 0.5s; }
-        .movie-card:hover img { transform: scale(1.08); filter: blur(1px); }
-
-        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(229,9,20,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+        
+        .movie-card { min-width: 125px; position: relative; border-radius: 10px; overflow: hidden; transition: 0.3s; cursor: pointer; }
+        .movie-card.mini { min-width: 85px; max-width: 85px; }
+        .movie-card img { width: 100%; display: block; }
+        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
         .movie-card:hover .card-overlay { opacity: 1; }
-        .play-icon { background: white; color: black; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .play-icon { background: white; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 10; }
 
-        .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 10; }
-
-        /* Player Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
         iframe { width: 100%; height: 100%; border: none; }
         .close-btn { padding: 15px; color: white; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
@@ -107,7 +104,7 @@
 
 <nav id="navbar">
     <a href="#" class="logo">Exotic<span>N9</span></a>
-    <div class="menu-toggle" onclick="toggleMenu()">
+    <div class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
         <span></span>
         <span></span>
         <span></span>
@@ -117,9 +114,9 @@
 <div class="overlay-bg" id="overlay" onclick="toggleMenu()"></div>
 <div class="side-menu" id="sideMenu">
     <a href="#" onclick="toggleMenu()">الرئيسية</a>
-    <a href="#trending-section" onclick="toggleMenu()">تصفح</a>
-    <a href="#movies-2026" onclick="toggleMenu()">الأفلام</a>
-    <a href="#tv-section" onclick="toggleMenu()">المسلسلات</a>
+    <a href="#movies-2026" onclick="toggleMenu()">أفلام 2026</a>
+    <a href="#tv-section" onclick="toggleMenu()">مسلسلات</a>
+    <a href="#trending-section" onclick="toggleMenu()">الأكثر شهرة</a>
     <a href="#anime-section" onclick="toggleMenu()">الأنمي</a>
 </div>
 
@@ -171,7 +168,10 @@
     function toggleMenu() {
         const menu = document.getElementById('sideMenu');
         const overlay = document.getElementById('overlay');
+        const toggle = document.getElementById('menuToggle');
+        
         menu.classList.toggle('active');
+        toggle.classList.toggle('open');
         overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
     }
 
