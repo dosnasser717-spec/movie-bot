@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExoticN9 | تجربة بدون إعلانات</title>
+    <title>ExoticN9 | عالم الترفيه</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,7 +21,7 @@
             color: var(--text-color); margin: 0; overflow-x: hidden; width: 100%;
         }
 
-        /* --- Navbar --- */
+        /* --- الهيدر --- */
         nav {
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             display: flex; align-items: center; justify-content: space-between;
@@ -31,22 +31,25 @@
         .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        .menu-toggle { cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1100; padding: 10px;}
+        .menu-toggle { cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1200; padding: 10px; }
         .menu-toggle span { display: block; width: 28px; height: 3px; background: white; border-radius: 2px; transition: 0.3s; }
+        .menu-toggle.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-toggle.open span:nth-child(2) { opacity: 0; }
+        .menu-toggle.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        /* Side Menu */
+        /* --- القائمة الجانبية --- */
         .side-menu {
             position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
             background: var(--nav-bg); z-index: 1050; display: flex; flex-direction: column;
             padding: 80px 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
         }
         .side-menu.active { right: 0; }
 
         .search-container { margin-bottom: 25px; }
         .search-container input {
             width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05); color: white; font-family: 'Cairo';
+            background: rgba(255,255,255,0.05); color: white; font-family: 'Cairo'; font-size: 0.9rem;
         }
 
         .side-menu a {
@@ -56,52 +59,51 @@
         }
         .side-menu a:hover { color: var(--accent); padding-right: 10px; }
 
-        .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1040; display: none; backdrop-filter: blur(4px); }
+        .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1040; display: none; backdrop-filter: blur(5px); }
 
-        /* Hero */
+        /* --- Hero --- */
         .hero { height: 60vh; width: 100%; background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 5%; position: relative; }
         .hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: linear-gradient(to top, var(--bg), transparent); }
         .hero-info { position: relative; z-index: 2; max-width: 500px; }
         .hero-info h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         .hero-play-btn { display: inline-flex; align-items: center; gap: 10px; background: white; color: black; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .hero-play-btn:hover { background: var(--accent); color: white; transform: scale(1.05); }
 
-        /* Rows & Cards */
+        /* --- Rows & Cards --- */
         .row { padding: 0 0 0 5%; margin-bottom: 30px; scroll-margin-top: 80px; }
         .row h2 { font-size: 1rem; font-weight: 700; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
         .posters-container { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none; }
         .posters-container::-webkit-scrollbar { display: none; }
 
-        .movie-card { min-width: 130px; position: relative; border-radius: 12px; overflow: hidden; transition: 0.3s; cursor: pointer; }
+        .movie-card { min-width: 130px; position: relative; border-radius: 12px; overflow: hidden; transition: 0.3s; cursor: pointer; background: #111; }
         .movie-card img { width: 100%; display: block; height: 190px; object-fit: cover; }
         .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
         .movie-card:hover .card-overlay { opacity: 1; }
-        .play-icon { background: var(--accent); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 15px var(--accent); }
+        .play-icon { background: var(--accent); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
 
-        /* Modal Player */
+        /* --- المشغل --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
         iframe { width: 100%; height: 100%; border: none; }
-        .close-btn { padding: 15px; color: white; cursor: pointer; background: #111; text-align: center; font-weight: bold; font-size: 1.1rem; }
+        .close-btn { padding: 15px; color: white; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
 
         .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 10; }
     </style>
 </head>
 <body>
 
-<nav id="navbar">
+<nav>
     <a href="#" class="logo">Exotic<span>N9</span></a>
-    <div class="menu-toggle" onclick="toggleMenu()">
+    <div class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
         <span></span><span></span><span></span>
     </div>
 </nav>
 
 <div class="overlay-bg" id="overlay" onclick="toggleMenu()"></div>
+
 <div class="side-menu" id="sideMenu">
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="ابحث هنا..." oninput="searchMedia(this.value)">
+        <input type="text" placeholder="ابحث عن فيلم أو مسلسل..." oninput="searchMedia(this.value)">
     </div>
     <a href="#" onclick="toggleMenu()">الرئيسية</a>
-    <a href="#search-section" onclick="toggleMenu()">بحث</a>
     <a href="#movies-2026" onclick="toggleMenu()">الأفلام</a>
     <a href="#tv-section" onclick="toggleMenu()">المسلسلات</a>
     <a href="#anime-section" onclick="toggleMenu()">الأنمي</a>
@@ -131,12 +133,12 @@
     </div>
 
     <div class="row" id="tv-section">
-        <h2>المسلسلات الأكثر طلباً 📈</h2>
+        <h2>المسلسلات 📈</h2>
         <div class="posters-container" id="top-tv-row"></div>
     </div>
 
     <div class="row" id="trending-section">
-        <h2>ترند اليوم 🔥</h2>
+        <h2>الترند اليوم 🔥</h2>
         <div class="posters-container" id="trending-row"></div>
     </div>
 
@@ -157,25 +159,16 @@
     const B_IMG = 'https://image.tmdb.org/t/p/original';
 
     function toggleMenu() {
-        const menu = document.getElementById('sideMenu');
-        const overlay = document.getElementById('overlay');
-        menu.classList.toggle('active');
-        overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
-    }
-
-    // السيرفر الجديد النظيف (VidLink)
-    function getPlayerURL(id, type) {
-        if (type === 'tv') {
-            return `https://vidlink.pro/embed/tv/${id}/1/1?primaryColor=ff003c`;
-        }
-        return `https://vidlink.pro/embed/movie/${id}?primaryColor=ff003c`;
+        document.getElementById('sideMenu').classList.toggle('active');
+        document.getElementById('menuToggle').classList.toggle('open');
+        const isActive = document.getElementById('sideMenu').classList.contains('active');
+        document.getElementById('overlay').style.display = isActive ? 'block' : 'none';
     }
 
     async function searchMedia(query) {
         const section = document.getElementById('search-section');
         const row = document.getElementById('search-row');
         if (query.length < 2) { section.style.display = 'none'; return; }
-
         try {
             const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&language=ar&query=${query}`);
             const data = await res.json();
@@ -214,13 +207,13 @@
     function updateHero(m, type) {
         document.getElementById('hero-section').style.backgroundImage = `url(${B_IMG + m.backdrop_path})`;
         document.getElementById('hero-title').innerText = m.title || m.name;
-        document.getElementById('hero-play-container').innerHTML = `<div class="hero-play-btn" onclick="openPlayer(${m.id}, '${type}', '${m.poster_path}')">▶ شاهد الآن مجاناً</div>`;
+        document.getElementById('hero-play-container').innerHTML = `<div class="hero-play-btn" onclick="openPlayer(${m.id}, '${type}', '${m.poster_path}')">▶ مشاهدة الآن</div>`;
     }
 
     function openPlayer(id, type, poster) {
         document.getElementById('videoModal').style.display = 'flex';
-        const url = getPlayerURL(id, type);
-        document.getElementById('player-container').innerHTML = `<iframe src="${url}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+        const url = type === 'tv' ? `https://vidlink.pro/embed/tv/${id}/1/1` : `https://vidlink.pro/embed/movie/${id}`;
+        document.getElementById('player-container').innerHTML = `<iframe src="${url}" allowfullscreen allow="autoplay"></iframe>`;
         saveHistory(id, type, poster);
     }
 
@@ -228,7 +221,7 @@
         let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         history = history.filter(h => h.id !== id);
         history.unshift({id, type, poster});
-        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,12)));
+        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,10)));
         loadHistory();
     }
 
@@ -245,12 +238,10 @@
         const section = document.getElementById('history-section');
         const row = document.getElementById('history-row');
         if (history.length > 0) {
-            section.style.display = 'block';
-            row.innerHTML = '';
+            section.style.display = 'block'; row.innerHTML = '';
             history.forEach(m => {
                 const card = document.createElement('div');
-                card.className = 'movie-card mini';
-                card.style.minWidth = '100px';
+                card.className = 'movie-card'; card.style.minWidth = '100px';
                 card.onclick = () => openPlayer(m.id, m.type, m.poster);
                 card.innerHTML = `<div class="remove-btn" onclick="removeFromHistory(event, ${m.id})">✕</div><img src="${IMG + m.poster}" style="height:140px"><div class="card-overlay"><div class="play-icon" style="width:30px; height:30px; font-size:0.8rem">▶</div></div>`;
                 row.appendChild(card);
