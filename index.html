@@ -14,7 +14,6 @@
             margin: 0; overflow-x: hidden; padding-top: 70px;
         }
 
-        /* Nav */
         nav {
             background: var(--nav-bg); display: flex; align-items: center; justify-content: space-between;
             padding: 12px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
@@ -25,7 +24,6 @@
         .menu-toggle { cursor: pointer; padding: 10px; }
         .menu-toggle span { display: block; width: 25px; height: 3px; background: white; margin: 5px; border-radius: 2px; }
 
-        /* Side Menu */
         .side-menu {
             position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
             background: var(--nav-bg); z-index: 1050; padding: 80px 25px; transition: 0.4s;
@@ -37,7 +35,6 @@
 
         .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1040; display: none; }
 
-        /* Rows */
         .row { padding: 15px 0 0 5%; }
         .row h2 { font-size: 1.2rem; margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .row h2::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 4px; }
@@ -45,7 +42,6 @@
         .posters { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0 20px 0; scrollbar-width: none; }
         .posters::-webkit-scrollbar { display: none; }
 
-        /* Movie Card */
         .movie-card { 
             min-width: 140px; border-radius: 12px; overflow: hidden; position: relative; 
             background: #111; transition: 0.3s; cursor: pointer;
@@ -60,20 +56,19 @@
 
         .remove-btn { position: absolute; top: 5px; left: 5px; background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 15; }
 
-        /* Modal Player & Server Switcher */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
         
         .player-header { 
             display: flex; align-items: center; justify-content: space-between; 
             background: #111; padding: 10px 20px; border-bottom: 1px solid #333;
         }
-        .server-btns { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .server-btns { display: flex; gap: 10px; }
         .server-btn { 
             background: #222; color: white; border: 1px solid #444; 
-            padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; white-space: nowrap;
+            padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;
         }
         .server-btn.active { background: var(--accent); border-color: var(--accent); }
-        .close-btn { color: white; cursor: pointer; font-weight: bold; font-size: 1.2rem; padding-right: 10px; }
+        .close-btn { color: white; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
         
         iframe { width: 100%; height: 100%; border: none; }
     </style>
@@ -91,8 +86,10 @@
     <div style="padding-bottom:20px;"><input type="text" placeholder="ابحث عن فيلم أو مسلسل..." oninput="searchMedia(this.value)" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:10px; font-family:'Cairo';"></div>
     <a href="#" onclick="window.location.reload()">🏠 الرئيسية</a>
     
-    <h3>محتوى آسيوي وتركي</h3>
-    <a href="#" onclick="filterByLang('tr', 'tv', 'مسلسلات تركية 🇹🇷')">🇹🇷 مسلسلات تركية</a>
+    <h3>اكتشف الجديد</h3>
+    <a href="#" onclick="filterByYear(2026, 'أفلام 2026 🎬')">🆕 أفلام 2026</a>
+
+    <h3>محتوى آسيوي</h3>
     <a href="#" onclick="filterByLang('ko', 'tv', 'مسلسلات كورية 🇰🇷')">🇰🇷 مسلسلات كورية</a>
     <a href="#" onclick="filterByLang('zh', 'tv', 'مسلسلات صينية 🇨🇳')">🇨🇳 مسلسلات صينية</a>
     <a href="#" onclick="filterByLang('ko', 'movie', 'أفلام كورية 🇰🇷')">🎬 أفلام كورية</a>
@@ -143,16 +140,21 @@
 
     async function filterByLang(lang, type, title) {
         toggleMenu();
-        const main = document.getElementById('dynamic-rows');
-        main.innerHTML = '';
+        document.getElementById('dynamic-rows').innerHTML = '';
         await fetchMegaList(`/discover/${type}?with_original_language=${lang}&sort_by=popularity.desc`, title, type);
+        window.scrollTo(0,0);
+    }
+
+    async function filterByYear(year, title) {
+        toggleMenu();
+        document.getElementById('dynamic-rows').innerHTML = '';
+        await fetchMegaList(`/discover/movie?primary_release_year=${year}&sort_by=popularity.desc`, title);
         window.scrollTo(0,0);
     }
 
     async function filterByGenre(id, title) {
         toggleMenu();
-        const main = document.getElementById('dynamic-rows');
-        main.innerHTML = '';
+        document.getElementById('dynamic-rows').innerHTML = '';
         await fetchMegaList(`/discover/movie?with_genres=${id}`, title);
         window.scrollTo(0,0);
     }
@@ -186,17 +188,14 @@
         saveHistory(id, type, poster);
     }
 
-    // --- تعديل السيرفرات لتعمل مع المحتوى التركي والآسيوي ---
     function loadServer(num) {
         const { id, type } = currentMedia;
         const container = document.getElementById('player-container');
         const serverBox = document.getElementById('serverBox');
         
-        // استخدام روابط "Pro" المخصصة لتخطي حجب المحتوى
         const servers = [
             { name: 'سيرفر Pro 🚀', url: type === 'tv' ? `https://vidsrc.pro/embed/tv/${id}/1/1` : `https://vidsrc.pro/embed/movie/${id}` },
-            { name: 'سيرفر VIP 💎', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&sea=1&epi=1` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-            { name: 'سيرفر إضافي 🎬', url: type === 'tv' ? `https://autoembed.to/tv/tmdb/${id}-1-1` : `https://autoembed.to/movie/tmdb/${id}` }
+            { name: 'سيرفر 2', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&sea=1&epi=1` : `https://vidsrc.me/embed/movie?tmdb=${id}` }
         ];
 
         serverBox.innerHTML = servers.map((s, i) => `<button class="server-btn ${num === i+1 ? 'active' : ''}" onclick="loadServer(${i+1})">${s.name}</button>`).join('');
@@ -238,7 +237,10 @@
     window.onload = async () => {
         loadHistory();
         await fetchMegaList('/movie/popular?', 'الأكثر شهرة عالمياً ✨');
-        await fetchMegaList('/discover/tv?with_original_language=tr&sort_by=popularity.desc', 'الدراما التركية 🇹🇷', 'tv');
+        
+        // تم استبدال السطر التركي بسطر أفلام 2026
+        await fetchMegaList('/discover/movie?primary_release_year=2026&sort_by=popularity.desc', 'أحدث أفلام 2026 🎬');
+        
         await fetchMegaList('/discover/tv?with_original_language=ko&sort_by=popularity.desc', 'المسلسلات الكورية 🇰🇷', 'tv');
         await fetchMegaList('/discover/tv?with_original_language=zh&sort_by=popularity.desc', 'المسلسلات الصينية 🇨🇳', 'tv');
         await fetchMegaList('/discover/movie?with_watch_providers=8&watch_region=SA&sort_by=primary_release_date.desc', 'جديد نتفليكس (Netflix) 🔴');
