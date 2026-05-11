@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExoticN9 | المحرك الشامل</title>
+    <title>ExoticN9 | Premium Cinema</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff003c; --bg: #040714; --nav-bg: rgba(4, 7, 20, 0.98); --text-color: #ffffff; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text-color);
@@ -18,46 +18,59 @@
         nav {
             background: var(--nav-bg); display: flex; align-items: center; justify-content: space-between;
             padding: 12px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px);
         }
         .logo { font-size: 1.5rem; font-weight: 800; color: white; text-decoration: none; }
         .logo span { color: var(--accent); }
-        .menu-toggle { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 10px; }
-        .menu-toggle span { display: block; width: 25px; height: 3px; background: white; border-radius: 2px; }
+        .menu-toggle { cursor: pointer; padding: 10px; }
+        .menu-toggle span { display: block; width: 25px; height: 3px; background: white; margin: 5px; border-radius: 2px; }
 
         /* Side Menu */
         .side-menu {
             position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
-            background: var(--nav-bg); z-index: 1050; display: flex; flex-direction: column;
-            padding: 80px 25px; transition: 0.4s; overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+            background: var(--nav-bg); z-index: 1050; padding: 80px 25px; transition: 0.4s;
+            overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.8);
         }
         .side-menu.active { right: 0; }
-        .search-container input {
-            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333;
-            background: #111; color: white; margin-bottom: 20px; font-family: 'Cairo';
-        }
-        .side-menu h3 { font-size: 0.8rem; color: var(--accent); margin-top: 15px; border-bottom: 1px solid #222; }
-        .side-menu a { color: white; text-decoration: none; padding: 10px 0; display: block; font-weight: 600; font-size: 0.95rem; }
+        .side-menu a { color: white; text-decoration: none; padding: 12px 0; display: block; border-bottom: 1px solid #111; font-size: 0.9rem; }
 
         .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1040; display: none; }
 
         /* Rows */
         .row { padding: 15px 0 0 5%; }
-        .row h2 { font-size: 1rem; margin-bottom: 12px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .row h2::before { content: ''; width: 4px; height: 18px; background: var(--accent); border-radius: 2px; }
+        .row h2 { font-size: 1.2rem; margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .row h2::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 4px; }
         
-        .posters { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; scrollbar-width: none; }
+        .posters { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0 20px 0; scrollbar-width: none; }
         .posters::-webkit-scrollbar { display: none; }
 
-        .movie-card { min-width: 115px; border-radius: 10px; overflow: hidden; position: relative; background: #111; transition: 0.3s; }
-        .movie-card img { width: 100%; height: 170px; object-fit: cover; display: block; }
-        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
-        .movie-card:hover { transform: translateY(-5px); }
-        .movie-card:hover .card-overlay { opacity: 1; }
-        
-        .remove-btn { position: absolute; top: 4px; left: 4px; background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 10; }
+        /* Professional Movie Card */
+        .movie-card { 
+            min-width: 140px; border-radius: 12px; overflow: hidden; position: relative; 
+            background: #111; transition: 0.3s; cursor: pointer;
+        }
+        .movie-card:hover { transform: scale(1.05); }
+        .movie-card img { width: 100%; height: 200px; object-fit: cover; display: block; border-radius: 12px; }
 
-        /* Player */
+        /* Info Style - Always Visible Below Poster */
+        .movie-info-bar {
+            padding: 8px 4px;
+            background: transparent;
+        }
+        .movie-info-title {
+            font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            color: #fff; margin-bottom: 4px;
+        }
+        .movie-info-meta {
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #aaa;
+        }
+        .rating-badge {
+            background: rgba(255, 189, 0, 0.2); color: #ffbd00; padding: 1px 5px; border-radius: 4px; font-weight: 800;
+        }
+
+        .remove-btn { position: absolute; top: 5px; left: 5px; background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 15; }
+
+        /* Modal Player */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
         .close-btn { padding: 15px; color: white; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
         iframe { width: 100%; height: 100%; border: none; }
@@ -73,32 +86,21 @@
 <div class="overlay-bg" id="overlay" onclick="toggleMenu()"></div>
 
 <div class="side-menu" id="sideMenu">
-    <div class="search-container"><input type="text" placeholder="بحث شامل..." oninput="searchMedia(this.value)"></div>
-    <a href="#" onclick="window.location.reload()">الرئيسية</a>
-    
-    <h3>منصات عالمية</h3>
-    <a href="#" onclick="filterByProvider(8, 'Netflix')">جديد نتفليكس</a>
-    <a href="#" onclick="filterByProvider(119, 'Prime Video')">أمازون برايم</a>
-    <a href="#" onclick="filterByProvider(337, 'Disney+')">ديزني بلس</a>
-    
-    <h3>تصنيفات</h3>
-    <a href="#" onclick="filterByGenre(28, 'أكشن')">أفلام أكشن</a>
-    <a href="#" onclick="filterByGenre(27, 'رعب')">أفلام رعب</a>
-    <a href="#" onclick="filterByGenre(16, 'أنمي')">أنمي وكرتون</a>
+    <div style="padding-bottom:20px;"><input type="text" placeholder="ابحث عن فيلم أو مسلسل..." oninput="searchMedia(this.value)" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:10px; font-family:'Cairo';"></div>
+    <a href="#" onclick="window.location.reload()">🏠 الرئيسية</a>
+    <a href="#" onclick="filterByProvider(8, 'Netflix')">🔴 جديد نتفليكس</a>
+    <a href="#" onclick="filterByGenre(28, 'أكشن')">💥 أفلام أكشن</a>
+    <a href="#" onclick="filterByGenre(27, 'رعب')">💀 أفلام رعب</a>
+    <a href="#" onclick="filterByGenre(16, 'أنمي')">🏮 أنمي وكرتون</a>
+    <a href="#" onclick="filterByGenre(878, 'خيال علمي')">🛸 خيال علمي</a>
 </div>
 
-<main id="main-content">
+<main>
     <div class="row" id="search-section" style="display:none;"><h2>نتائج البحث 🔍</h2><div class="posters" id="search-row"></div></div>
     <div class="row" id="history-section" style="display:none;"><h2>أكمل المشاهدة 🕒</h2><div class="posters" id="history-row"></div></div>
 
     <div id="dynamic-rows">
-        <div class="row"><h2>أحدث الإضافات العالمية ✨</h2><div class="posters" id="row-latest"></div></div>
-        <div class="row"><h2>جديد نتفليكس (Netflix) 🔴</h2><div class="posters" id="row-netflix"></div></div>
-        <div class="row"><h2>أفلام 2026 🔥</h2><div class="posters" id="row-2026"></div></div>
-        <div class="row"><h2>مسلسلات ترند حالياً 📺</h2><div class="posters" id="row-tv"></div></div>
-        <div class="row"><h2>ديزني وأفلام العائلة 🏰</h2><div class="posters" id="row-disney"></div></div>
-        <div class="row"><h2>أفلام الرعب والإثارة 💀</h2><div class="posters" id="row-horror"></div></div>
-    </div>
+        </div>
 </main>
 
 <div class="modal" id="videoModal"><div class="close-btn" onclick="closePlayer()">✕ إغلاق المشغل</div><div id="player-container" style="flex:1;"></div></div>
@@ -113,17 +115,42 @@
         document.getElementById('overlay').style.display = menu.classList.contains('active') ? 'block' : 'none';
     }
 
-    // جلب كميات ضخمة (4 صفحات لكل قسم)
-    async function fetchMegaList(url, elementId, type = 'movie') {
-        const container = document.getElementById(elementId);
-        if (!container) return;
-        for (let page = 1; page <= 4; page++) {
+    async function fetchMegaList(url, title, type = 'movie') {
+        const rowId = `row-${Math.random().toString(36).substr(2, 9)}`;
+        const main = document.getElementById('dynamic-rows');
+        const rowHtml = `<div class="row"><h2>${title}</h2><div class="posters" id="${rowId}"></div></div>`;
+        main.insertAdjacentHTML('beforeend', rowHtml);
+        
+        const container = document.getElementById(rowId);
+        for (let page = 1; page <= 3; page++) {
             try {
                 const res = await fetch(`https://api.themoviedb.org/3${url}&api_key=${API_KEY}&language=ar&page=${page}`);
                 const data = await res.json();
                 data.results.forEach(m => { if (m.poster_path) container.appendChild(createCard(m, type)); });
             } catch (e) {}
         }
+    }
+
+    function createCard(m, type) {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.onclick = () => openPlayer(m.id, type, m.poster_path);
+        
+        const title = m.title || m.name;
+        const year = (m.release_date || m.first_air_date || '----').split('-')[0];
+        const rating = m.vote_average ? m.vote_average.toFixed(1) : 'N/A';
+
+        card.innerHTML = `
+            <img src="${IMG + m.poster_path}" loading="lazy">
+            <div class="movie-info-bar">
+                <div class="movie-info-title">${title}</div>
+                <div class="movie-info-meta">
+                    <span>📅 ${year}</span>
+                    <span class="rating-badge">★ ${rating}</span>
+                </div>
+            </div>
+        `;
+        return card;
     }
 
     async function searchMedia(query) {
@@ -134,31 +161,7 @@
         const data = await res.json();
         section.style.display = 'block'; row.innerHTML = '';
         data.results.forEach(m => { if(m.poster_path) row.appendChild(createCard(m, m.media_type || 'movie')); });
-    }
-
-    // فلترة حسب المنصة (Netflix, Disney, etc)
-    async function filterByProvider(providerId, name) {
-        toggleMenu();
-        const container = document.getElementById('dynamic-rows');
-        container.innerHTML = `<div class="row"><h2>محتوى ${name} 🎬</h2><div class="posters" id="filter-row"></div></div>`;
-        await fetchMegaList(`/discover/movie?with_watch_providers=${providerId}&watch_region=SA`, 'filter-row');
-        window.scrollTo(0, 0);
-    }
-
-    async function filterByGenre(id, name) {
-        toggleMenu();
-        const container = document.getElementById('dynamic-rows');
-        container.innerHTML = `<div class="row"><h2>${name} ✨</h2><div class="posters" id="filter-row"></div></div>`;
-        await fetchMegaList(`/discover/movie?with_genres=${id}`, 'filter-row');
-        window.scrollTo(0, 0);
-    }
-
-    function createCard(m, type) {
-        const card = document.createElement('div');
-        card.className = 'movie-card';
-        card.onclick = () => openPlayer(m.id, type, m.poster_path);
-        card.innerHTML = `<img src="${IMG + m.poster_path}" loading="lazy"><div class="card-overlay">▶</div>`;
-        return card;
+        window.scrollTo(0,0);
     }
 
     function openPlayer(id, type, poster) {
@@ -176,14 +179,6 @@
         loadHistory();
     }
 
-    function removeFromHistory(event, id) {
-        event.stopPropagation();
-        let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
-        history = history.filter(h => h.id !== id);
-        localStorage.setItem('exoticHistory', JSON.stringify(history));
-        loadHistory();
-    }
-
     function loadHistory() {
         const history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         const section = document.getElementById('history-section');
@@ -191,26 +186,35 @@
         if (history.length > 0) {
             section.style.display = 'block'; row.innerHTML = '';
             history.forEach(m => {
-                const card = document.createElement('div'); card.className = 'movie-card'; card.style.minWidth = '95px';
+                const card = document.createElement('div'); card.className = 'movie-card'; card.style.minWidth = '110px';
                 card.onclick = () => openPlayer(m.id, m.type, m.poster);
-                card.innerHTML = `<div class="remove-btn" onclick="removeFromHistory(event, ${m.id})">✕</div><img src="${IMG + m.poster}" style="height:140px"><div class="card-overlay">▶</div>`;
+                card.innerHTML = `<div class="remove-btn" onclick="event.stopPropagation(); removeFromHistory(${m.id})">✕</div><img src="${IMG + m.poster}" style="height:150px">`;
                 row.appendChild(card);
             });
         } else { section.style.display = 'none'; }
     }
 
+    function removeFromHistory(id) {
+        let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
+        history = history.filter(h => h.id !== id);
+        localStorage.setItem('exoticHistory', JSON.stringify(history));
+        loadHistory();
+    }
+
     function closePlayer() { document.getElementById('videoModal').style.display = 'none'; document.getElementById('player-container').innerHTML = ''; }
 
-    window.onload = () => {
+    window.onload = async () => {
         loadHistory();
-        // جلب البيانات لجميع الأقسام
-        fetchMegaList('/movie/now_playing?', 'row-latest');
-        fetchMegaList('/discover/movie?with_watch_providers=8&watch_region=SA', 'row-netflix');
-        fetchMegaList('/discover/movie?primary_release_year=2026', 'row-2026');
-        fetchMegaList('/tv/popular?', 'row-tv', 'tv');
-        fetchMegaList('/discover/movie?with_watch_providers=337&watch_region=SA', 'row-disney');
-        fetchMegaList('/discover/movie?with_genres=27', 'row-horror');
+        
+        // جلب الأقسام بترتيب المنصات العالمية
+        await fetchMegaList('/movie/popular?', 'الأكثر شهرة عالمياً ✨');
+        await fetchMegaList('/discover/movie?with_watch_providers=8&watch_region=SA&sort_by=primary_release_date.desc', 'جديد نتفليكس (Netflix) 🔴');
+        await fetchMegaList('/discover/movie?primary_release_year=2026', 'أفلام 2026 القادمة 🔥');
+        await fetchMegaList('/tv/popular?', 'ترند المسلسلات 📺', 'tv');
+        await fetchMegaList('/discover/movie?with_genres=28', 'أفلام الأكشن والإثارة 👊');
+        await fetchMegaList('/discover/movie?with_genres=16', 'عالم الأنمي والكرتون 🏮');
+        await fetchMegaList('/discover/movie?with_genres=27', 'سينما الرعب 💀');
     };
 </script>
 </body>
-</html>ض
+</html>
