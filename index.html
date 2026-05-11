@@ -3,115 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Bot | واجهتك للترفيه</title>
+    <title>Movie Bot | عالم الترفيه</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #e50914;
-            --body-bg: #06090f;
-            --card-bg: #141414;
+            --primary-red: #e50914;
+            --dark-bg: #0b0e11;
+            --card-shadow: 0 8px 15px rgba(0,0,0,0.5);
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--body-bg);
+            background-color: var(--dark-bg);
             color: white;
             margin: 0;
             overflow-x: hidden;
         }
 
-        /* Navbar */
-        nav {
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            position: fixed;
-            width: 90%;
-            z-index: 1000;
+        /* الهيدر - مستوحى من صورتك */
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(to bottom, #141414, transparent);
         }
 
-        .logo { color: var(--primary-color); font-size: 24px; font-weight: bold; }
-
-        /* Hero Section */
-        .hero {
-            height: 80vh;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            padding: 0 5%;
-            position: relative;
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-red);
+            margin-bottom: 20px;
         }
 
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 150px;
-            background: linear-gradient(to top, var(--body-bg), transparent);
+        .search-container {
+            margin-bottom: 25px;
         }
 
-        .hero-content { max-width: 600px; z-index: 2; }
-        .hero-content h1 { font-size: 3rem; margin: 0; }
-        .hero-content p { font-size: 1.1rem; color: #ccc; }
+        .search-box {
+            padding: 12px 25px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 30px;
+            border: 1px solid #333;
+            background: #1a1d23;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
 
-        /* Row Styling */
-        .row { margin: 30px 0; padding: 0 5%; }
-        .row h2 { font-size: 1.5rem; margin-bottom: 15px; }
-        
+        /* الصفوف (Rows) */
+        .row {
+            padding: 0 4%;
+            margin-bottom: 40px;
+        }
+
+        .row h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            border-right: 4px solid var(--primary-red);
+            padding-right: 10px;
+        }
+
         .posters-container {
             display: flex;
             overflow-x: auto;
             gap: 15px;
-            padding: 10px 0;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
+            padding-bottom: 15px;
+            scrollbar-width: thin;
         }
 
-        .posters-container::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+        .posters-container::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .posters-container::-webkit-scrollbar-thumb {
+            background: var(--primary-red);
+            border-radius: 10px;
+        }
 
         .movie-card {
-            min-width: 160px;
-            transition: transform 0.3s ease;
+            min-width: 150px;
+            transition: 0.3s ease;
             cursor: pointer;
-            border-radius: 8px;
-            overflow: hidden;
         }
 
-        .movie-card:hover { transform: scale(1.1); z-index: 10; }
-        .movie-card img { width: 100%; border-radius: 8px; }
+        .movie-card:hover {
+            transform: scale(1.08);
+        }
 
-        /* Modal Player */
+        .movie-card img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* مشغل الفيديو */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 2000;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
             justify-content: center;
             align-items: center;
         }
 
-        .modal-content { width: 80%; height: 80%; position: relative; }
-        .close-btn {
-            position: absolute; top: -40px; right: 0;
-            color: white; font-size: 30px; cursor: pointer;
-        }
-        iframe { width: 100%; height: 100%; border: none; border-radius: 10px; }
+        .modal-content { width: 90%; height: 80%; position: relative; }
+        iframe { width: 100%; height: 100%; border: none; border-radius: 15px; }
+        .close-btn { position: absolute; top: -40px; left: 0; color: white; font-size: 30px; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="logo">MOVIE BOT 🤖</div>
-</nav>
-
-<section class="hero" id="hero">
-    <div class="hero-content">
-        <h1 id="hero-title">اسم الفيلم المميز</h1>
-        <p id="hero-desc">وصف بسيط وشيق للفيلم المختار حالياً...</p>
+<header>
+    <div class="logo">🤖 MOVIE BOT</div>
+    <div class="search-container">
+        <input type="text" id="search" class="search-box" placeholder="ابحث عن فيلم، مسلسل، أو أنمي...">
     </div>
-</section>
+</header>
 
 <div class="row">
     <h2>أفلام تريند 🔥</h2>
@@ -119,27 +128,12 @@
 </div>
 
 <div class="row">
-    <h2>أفلام الأكشن 💥</h2>
-    <div class="posters-container" id="action-row"></div>
-</div>
-
-<div class="row">
-    <h2>مسلسلات مختارة 📺</h2>
-    <div class="posters-container" id="tv-row"></div>
-</div>
-
-<div class="modal" id="videoModal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closePlayer()">&times;</span>
-        <div id="player-container"></div>
-   </div>
-<div class="row">
-    <h2>أفلام الرعب والغموض 👻</h2>
+    <h2>أفلام الرعب 👻</h2>
     <div class="posters-container" id="horror-row"></div>
 </div>
 
 <div class="row">
-    <h2>عالم الأنمي والكرتون 🐉</h2>
+    <h2>عالم الأنمي 🐉</h2>
     <div class="posters-container" id="anime-row"></div>
 </div>
 
@@ -147,30 +141,31 @@
     <h2>أفلام كوميدية 🍿</h2>
     <div class="posters-container" id="comedy-row"></div>
 </div>
+
+<div class="row">
+    <h2>مسلسلات 📺</h2>
+    <div class="posters-container" id="tv-row"></div>
+</div>
+
+<div class="modal" id="videoModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closePlayer()">&times;</span>
+        <div id="player-container" style="height: 100%;"></div>
+    </div>
 </div>
 
 <script>
     const API_KEY = 'c2a4565c270e6801828b769a89614135';
     const BASE_URL = 'https://api.themoviedb.org/3';
-    const IMG_URL = 'https://image.tmdb.org/t/p/original';
 
-    // 1. جلب بيانات الصفحة الرئيسية (Hero)
-    async function fetchHero() {
-        const res = await fetch(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}`);
-        const data = await res.json();
-        const movie = data.results[0];
-        document.getElementById('hero').style.backgroundImage = `url(${IMG_URL + movie.backdrop_path})`;
-        document.getElementById('hero-title').innerText = movie.title;
-        document.getElementById('hero-desc').innerText = movie.overview.substring(0, 150) + "...";
-    }
-
-    // 2. وظيفة عامة لجلب الصفوف
-    async function fetchRow(path, elementId, type = 'movie') {
-        const res = await fetch(`${BASE_URL}${path}&api_key=${API_KEY}&language=ar`);
+    // وظيفة جلب البيانات
+    async function fetchSection(url, elementId, type = 'movie') {
+        const res = await fetch(`${BASE_URL}${url}&api_key=${API_KEY}&language=ar`);
         const data = await res.json();
         const container = document.getElementById(elementId);
 
         data.results.forEach(item => {
+            if (!item.poster_path) return;
             const card = document.createElement('div');
             card.className = 'movie-card';
             card.onclick = () => openPlayer(item.id, type);
@@ -179,13 +174,11 @@
         });
     }
 
-    // 3. التحكم في المشغل
+    // وظيفة المشغل
     function openPlayer(id, type) {
-        const modal = document.getElementById('videoModal');
-        const container = document.getElementById('player-container');
-        // ملاحظة: vidsrc هو مزود خارجي للمشاهدة
-        container.innerHTML = `<iframe src="https://vidsrc.me/embed/${type}?tmdb=${id}" allowfullscreen></iframe>`;
-        modal.style.display = 'flex';
+        document.getElementById('videoModal').style.display = 'flex';
+        document.getElementById('player-container').innerHTML = 
+            `<iframe src="https://vidsrc.me/embed/${type}?tmdb=${id}" allowfullscreen></iframe>`;
     }
 
     function closePlayer() {
@@ -193,24 +186,24 @@
         document.getElementById('player-container').innerHTML = '';
     }
 
-    // تشغيل كل شيء عند التحميل
+    // تحميل الأقسام عند الفتح
     window.onload = () => {
-        fetchHero();
-        fetchRow('/trending/all/week?', 'trending-row');
-        fetchRow('/discover/movie?with_genres=28', 'action-row'); // Genre 28 = Action
-        fetchRow('/discover/tv?sort_by=popularity.desc', 'tv-row', 'tv');
+        fetchSection('/trending/all/week?', 'trending-row');
+        fetchSection('/discover/movie?with_genres=27', 'horror-row'); // رعب
+        fetchSection('/discover/movie?with_genres=16', 'anime-row');  // أنمي
+        fetchSection('/discover/movie?with_genres=35', 'comedy-row'); // كوميدي
+        fetchSection('/discover/tv?sort_by=popularity.desc', 'tv-row', 'tv'); // مسلسلات
     };
-    window.onload = () => {
-    fetchHero();
-    fetchRow('/trending/all/week?', 'trending-row');
-    fetchRow('/discover/movie?with_genres=28', 'action-row'); // أكشن
-    fetchRow('/discover/tv?sort_by=popularity.desc', 'tv-row', 'tv'); // مسلسلات
-    
-    // الأقسام الجديدة التي طلبتها:
-    fetchRow('/discover/movie?with_genres=27', 'horror-row'); // 27 هو رقم الرعب
-    fetchRow('/discover/movie?with_genres=16', 'anime-row');  // 16 هو رقم الأنمي والرسوم المتحركة
-    fetchRow('/discover/movie?with_genres=35', 'comedy-row'); // 35 هو رقم الكوميديا
-};
+
+    // برمجة البحث
+    document.getElementById('search').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            const query = this.value;
+            if(query) {
+                window.open(`https://www.themoviedb.org/search?query=${query}`, '_blank');
+            }
+        }
+    });
 </script>
 
 </body>
