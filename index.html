@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExoticN9 | Premium Cinema & Arabic</title>
+    <title>ExoticN9 | Premium Cinema</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff003c; --bg: #040714; --nav-bg: rgba(4, 7, 20, 0.98); --text-color: #ffffff; }
@@ -33,7 +33,6 @@
         }
         .side-menu.active { right: 0; }
         .side-menu a { color: white; text-decoration: none; padding: 12px 0; display: block; border-bottom: 1px solid #111; font-size: 0.9rem; }
-        .side-menu h3 { font-size: 0.75rem; color: var(--accent); margin-top: 15px; border-bottom: 1px solid #222; }
 
         .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1040; display: none; }
 
@@ -53,14 +52,21 @@
         .movie-card:hover { transform: scale(1.05); }
         .movie-card img { width: 100%; height: 200px; object-fit: cover; display: block; border-radius: 12px; }
 
-        /* Info Style - Visible Below Poster */
-        .movie-info-bar { padding: 8px 4px; background: transparent; }
+        /* Info Style - Always Visible Below Poster */
+        .movie-info-bar {
+            padding: 8px 4px;
+            background: transparent;
+        }
         .movie-info-title {
             font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             color: #fff; margin-bottom: 4px;
         }
-        .movie-info-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #aaa; }
-        .rating-badge { background: rgba(255, 189, 0, 0.2); color: #ffbd00; padding: 1px 5px; border-radius: 4px; font-weight: 800; }
+        .movie-info-meta {
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #aaa;
+        }
+        .rating-badge {
+            background: rgba(255, 189, 0, 0.2); color: #ffbd00; padding: 1px 5px; border-radius: 4px; font-weight: 800;
+        }
 
         .remove-btn { position: absolute; top: 5px; left: 5px; background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 15; }
 
@@ -82,16 +88,11 @@
 <div class="side-menu" id="sideMenu">
     <div style="padding-bottom:20px;"><input type="text" placeholder="ابحث عن فيلم أو مسلسل..." oninput="searchMedia(this.value)" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:10px; font-family:'Cairo';"></div>
     <a href="#" onclick="window.location.reload()">🏠 الرئيسية</a>
-    
-    <h3>قسم المحتوى العربي</h3>
-    <a href="#" onclick="filterByArabic('tv')">📺 مسلسلات عربية</a>
-    <a href="#" onclick="filterByArabic('movie')">🇸🇦 أفلام عربية</a>
-
-    <h3>المحتوى العالمي</h3>
     <a href="#" onclick="filterByProvider(8, 'Netflix')">🔴 جديد نتفليكس</a>
     <a href="#" onclick="filterByGenre(28, 'أكشن')">💥 أفلام أكشن</a>
     <a href="#" onclick="filterByGenre(27, 'رعب')">💀 أفلام رعب</a>
     <a href="#" onclick="filterByGenre(16, 'أنمي')">🏮 أنمي وكرتون</a>
+    <a href="#" onclick="filterByGenre(878, 'خيال علمي')">🛸 خيال علمي</a>
 </div>
 
 <main>
@@ -130,16 +131,6 @@
         }
     }
 
-    // وظيفة خاصة لفلترة المحتوى العربي يدوياً من القائمة
-    async function filterByArabic(type) {
-        toggleMenu();
-        const container = document.getElementById('dynamic-rows');
-        container.innerHTML = '';
-        const title = type === 'tv' ? 'المسلسلات العربية ✨' : 'الأفلام العربية 🇸🇦';
-        await fetchMegaList(`/discover/${type}?with_original_language=ar&sort_by=popularity.desc`, title, type);
-        window.scrollTo(0,0);
-    }
-
     function createCard(m, type) {
         const card = document.createElement('div');
         card.className = 'movie-card';
@@ -175,7 +166,6 @@
 
     function openPlayer(id, type, poster) {
         document.getElementById('videoModal').style.display = 'flex';
-        // السيرفر يدعم المحتوى العربي تلقائياً بناءً على معرف TMDB
         const url = type === 'tv' ? `https://vidsrc.icu/embed/tv/${id}/1/1` : `https://vidsrc.icu/embed/movie/${id}`;
         document.getElementById('player-container').innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
         saveHistory(id, type, poster);
@@ -216,16 +206,13 @@
     window.onload = async () => {
         loadHistory();
         
-        // جلب المحتوى العربي في المقدمة
-        await fetchMegaList('/discover/tv?with_original_language=ar&sort_by=popularity.desc', 'أحدث المسلسلات العربية 📺', 'tv');
-        await fetchMegaList('/discover/movie?with_original_language=ar&sort_by=release_date.desc', 'أفلام عربية جديدة 🇸🇦');
-        
-        // الأقسام العالمية الأصلية
+        // جلب الأقسام بترتيب المنصات العالمية
         await fetchMegaList('/movie/popular?', 'الأكثر شهرة عالمياً ✨');
         await fetchMegaList('/discover/movie?with_watch_providers=8&watch_region=SA&sort_by=primary_release_date.desc', 'جديد نتفليكس (Netflix) 🔴');
         await fetchMegaList('/discover/movie?primary_release_year=2026', 'أفلام 2026 القادمة 🔥');
-        await fetchMegaList('/tv/popular?', 'ترند المسلسلات الأجنبية 📺', 'tv');
+        await fetchMegaList('/tv/popular?', 'ترند المسلسلات 📺', 'tv');
         await fetchMegaList('/discover/movie?with_genres=28', 'أفلام الأكشن والإثارة 👊');
+        await fetchMegaList('/discover/movie?with_genres=16', 'عالم الأنمي والكرتون 🏮');
         await fetchMegaList('/discover/movie?with_genres=27', 'سينما الرعب 💀');
     };
 </script>
