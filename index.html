@@ -60,13 +60,21 @@
 
         .remove-btn { position: absolute; top: 5px; left: 5px; background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 15; }
 
-        /* Modal Player */
+        /* Modal Player & Server Switcher */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
-        .player-header { display: flex; align-items: center; justify-content: space-between; background: #111; padding: 10px 20px; border-bottom: 1px solid #333; overflow-x: auto; }
-        .server-btns { display: flex; gap: 8px; padding: 5px 0; }
-        .server-btn { background: #222; color: white; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; white-space: nowrap; }
+        
+        .player-header { 
+            display: flex; align-items: center; justify-content: space-between; 
+            background: #111; padding: 10px 20px; border-bottom: 1px solid #333;
+        }
+        .server-btns { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .server-btn { 
+            background: #222; color: white; border: 1px solid #444; 
+            padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; white-space: nowrap;
+        }
         .server-btn.active { background: var(--accent); border-color: var(--accent); }
-        .close-btn { color: white; cursor: pointer; font-weight: bold; font-size: 1.2rem; padding-right: 15px; }
+        .close-btn { color: white; cursor: pointer; font-weight: bold; font-size: 1.2rem; padding-right: 10px; }
+        
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
@@ -82,10 +90,13 @@
 <div class="side-menu" id="sideMenu">
     <div style="padding-bottom:20px;"><input type="text" placeholder="ابحث عن فيلم أو مسلسل..." oninput="searchMedia(this.value)" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:10px; font-family:'Cairo';"></div>
     <a href="#" onclick="window.location.reload()">🏠 الرئيسية</a>
+    
     <h3>محتوى آسيوي وتركي</h3>
     <a href="#" onclick="filterByLang('tr', 'tv', 'مسلسلات تركية 🇹🇷')">🇹🇷 مسلسلات تركية</a>
     <a href="#" onclick="filterByLang('ko', 'tv', 'مسلسلات كورية 🇰🇷')">🇰🇷 مسلسلات كورية</a>
     <a href="#" onclick="filterByLang('zh', 'tv', 'مسلسلات صينية 🇨🇳')">🇨🇳 مسلسلات صينية</a>
+    <a href="#" onclick="filterByLang('ko', 'movie', 'أفلام كورية 🇰🇷')">🎬 أفلام كورية</a>
+
     <h3>تصنيفات</h3>
     <a href="#" onclick="filterByProvider(8, 'Netflix')">🔴 جديد نتفليكس</a>
     <a href="#" onclick="filterByGenre(28, 'أكشن')">💥 أفلام أكشن</a>
@@ -138,6 +149,14 @@
         window.scrollTo(0,0);
     }
 
+    async function filterByGenre(id, title) {
+        toggleMenu();
+        const main = document.getElementById('dynamic-rows');
+        main.innerHTML = '';
+        await fetchMegaList(`/discover/movie?with_genres=${id}`, title);
+        window.scrollTo(0,0);
+    }
+
     function createCard(m, type) {
         const card = document.createElement('div');
         card.className = 'movie-card';
@@ -167,17 +186,17 @@
         saveHistory(id, type, poster);
     }
 
+    // --- تعديل السيرفرات لتعمل مع المحتوى التركي والآسيوي ---
     function loadServer(num) {
         const { id, type } = currentMedia;
         const container = document.getElementById('player-container');
         const serverBox = document.getElementById('serverBox');
         
-        // تحديث السيرفرات وإضافة سيرفرات متخصصة
+        // استخدام روابط "Pro" المخصصة لتخطي حجب المحتوى
         const servers = [
-            { name: 'سيرفر الأساسي', url: type === 'tv' ? `https://vidsrc.icu/embed/tv/${id}/1/1` : `https://vidsrc.icu/embed/movie/${id}` },
-            { name: 'سيرفر VIP', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/1/1` : `https://vidsrc.to/embed/movie/${id}` },
-            { name: 'سيرفر آسيوي/تركي', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&sea=1&epi=1` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-            { name: 'سيرفر احتياطي', url: type === 'tv' ? `https://embed.su/embed/tv/${id}/1/1` : `https://embed.su/embed/movie/${id}` }
+            { name: 'سيرفر Pro 🚀', url: type === 'tv' ? `https://vidsrc.pro/embed/tv/${id}/1/1` : `https://vidsrc.pro/embed/movie/${id}` },
+            { name: 'سيرفر VIP 💎', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&sea=1&epi=1` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+            { name: 'سيرفر إضافي 🎬', url: type === 'tv' ? `https://autoembed.to/tv/tmdb/${id}-1-1` : `https://autoembed.to/movie/tmdb/${id}` }
         ];
 
         serverBox.innerHTML = servers.map((s, i) => `<button class="server-btn ${num === i+1 ? 'active' : ''}" onclick="loadServer(${i+1})">${s.name}</button>`).join('');
@@ -222,6 +241,9 @@
         await fetchMegaList('/discover/tv?with_original_language=tr&sort_by=popularity.desc', 'الدراما التركية 🇹🇷', 'tv');
         await fetchMegaList('/discover/tv?with_original_language=ko&sort_by=popularity.desc', 'المسلسلات الكورية 🇰🇷', 'tv');
         await fetchMegaList('/discover/tv?with_original_language=zh&sort_by=popularity.desc', 'المسلسلات الصينية 🇨🇳', 'tv');
+        await fetchMegaList('/discover/movie?with_watch_providers=8&watch_region=SA&sort_by=primary_release_date.desc', 'جديد نتفليكس (Netflix) 🔴');
+        await fetchMegaList('/tv/popular?', 'ترند المسلسلات 📺', 'tv');
+        await fetchMegaList('/discover/movie?with_genres=28', 'أفلام الأكشن والإثارة 👊');
     };
 </script>
 </body>
