@@ -75,19 +75,20 @@ nav{background:#0a0a0a;padding:12px 20px;display:flex;align-items:center;justify
 .add-switch{display:flex;gap:8px;margin-bottom:16px}
 .sw-btn{flex:1;padding:9px;border-radius:8px;border:1px solid #2a2a2a;background:transparent;color:#888;font-size:13px;cursor:pointer;transition:all 0.2s;text-align:center;font-family:inherit}
 .sw-btn.active{background:#e50914;border-color:#e50914;color:#fff}
-.type-switch{display:flex;gap:8px;margin-bottom:14px}
-.type-btn{flex:1;padding:8px;border-radius:8px;border:1px solid #2a2a2a;background:transparent;color:#888;font-size:13px;cursor:pointer;font-family:inherit}
-.type-btn.active{background:#222;border-color:#444;color:#fff}
-label{display:block;font-size:12px;color:#777;margin-bottom:6px}
-input,textarea{width:100%;padding:10px 14px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#fff;font-size:13px;outline:none;font-family:inherit;margin-bottom:12px}
-input:focus,textarea:focus{border-color:#e50914}
-textarea{resize:vertical;min-height:80px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.add-btn{width:100%;padding:12px;background:#e50914;border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit}
+.type-switch{display:flex;gap:8px;margin-bottom:16px}
+.type-btn{flex:1;padding:10px;border-radius:8px;border:2px solid #2a2a2a;background:#111;color:#888;font-size:14px;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.type-btn.active{background:#e50914;border-color:#e50914;color:#fff;font-weight:600}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;color:#777;margin-bottom:7px}
+.form-group input,.form-group textarea{width:100%;padding:11px 14px;background:#1a1a1a;border:1px solid #333;border-radius:9px;color:#fff;font-size:14px;outline:none;font-family:inherit;transition:border 0.2s}
+.form-group input:focus,.form-group textarea:focus{border-color:#e50914}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.add-btn{width:100%;padding:13px;background:#e50914;border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;margin-top:4px}
 .add-btn:disabled{background:#555;cursor:not-allowed}
-.bulk-box{background:#111;border:2px dashed #2a2a2a;border-radius:10px;padding:14px;margin-bottom:12px}
-.bulk-hint{font-size:11px;color:#555;margin-bottom:8px;line-height:1.6}
-.bulk-box textarea{margin-bottom:0;background:transparent;border:none;color:#ccc;font-family:monospace;font-size:12px}
+.bulk-box{background:#111;border:2px dashed #2a2a2a;border-radius:10px;padding:14px;margin-bottom:14px}
+.bulk-hint{font-size:11px;color:#555;margin-bottom:10px;line-height:1.7}
+.bulk-box textarea{width:100%;background:transparent;border:none;color:#ccc;font-family:monospace;font-size:12px;outline:none;resize:vertical;min-height:120px}
 .divider{border:none;border-top:1px solid #1a1a1a;margin:20px 0}
 .list-title{font-size:14px;font-weight:600;margin-bottom:12px;color:#888}
 .list-item{background:#1a1a1a;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;border:1px solid #2a2a2a}
@@ -112,9 +113,15 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </nav>
 
+<!-- صفحة العرض -->
 <div class="page active" id="page-user">
   <div class="hero"><h1>🎬 أفلام ومسلسلات</h1><p>اكتشف أفضل المحتوى المختار</p></div>
-  <div class="search-wrap"><div class="search-box"><input type="text" id="searchInput" placeholder="ابحث..." oninput="filterContent()"><i class="ti ti-search"></i></div></div>
+  <div class="search-wrap">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="ابحث عن فيلم أو مسلسل..." oninput="filterContent()">
+      <i class="ti ti-search"></i>
+    </div>
+  </div>
   <div class="filters">
     <button class="filter-btn active" onclick="setFilter('all',this)">🌟 الكل</button>
     <button class="filter-btn" onclick="setFilter('movie',this)">🎬 أفلام</button>
@@ -122,11 +129,17 @@ textarea{resize:vertical;min-height:80px}
     <button class="filter-btn" onclick="setFilter('top',this)">⭐ الأعلى تقييماً</button>
   </div>
   <div class="section">
-    <div class="section-header"><div class="section-title">المحتوى المتاح</div><div class="count-badge" id="count-badge">0 عنصر</div></div>
-    <div class="grid" id="contentGrid"><div class="loading"><div class="spinner"></div><div>جاري التحميل...</div></div></div>
+    <div class="section-header">
+      <div class="section-title">المحتوى المتاح</div>
+      <div class="count-badge" id="count-badge">0 عنصر</div>
+    </div>
+    <div class="grid" id="contentGrid">
+      <div class="loading"><div class="spinner"></div><div>جاري التحميل...</div></div>
+    </div>
   </div>
 </div>
 
+<!-- صفحة الإدارة -->
 <div class="page" id="page-admin">
   <div class="admin-top">
     <h2>⚙️ لوحة التحكم</h2>
@@ -141,166 +154,338 @@ textarea{resize:vertical;min-height:80px}
       <button class="sw-btn active" onclick="setTab('single',this)">➕ إضافة واحد</button>
       <button class="sw-btn" onclick="setTab('bulk',this)">📋 إضافة دفعة</button>
     </div>
+
+    <!-- إضافة واحد -->
     <div id="tab-single">
       <div class="type-switch">
-        <button class="type-btn active" onclick="setType('movie',this)">🎬 فيلم</button>
-        <button class="type-btn" onclick="setType('series',this)">📺 مسلسل</button>
+        <button class="type-btn active" id="btn-movie" onclick="setType('movie')">🎬 فيلم</button>
+        <button class="type-btn" id="btn-series" onclick="setType('series')">📺 مسلسل</button>
       </div>
-      <label>الاسم *</label><input type="text" id="f-name" placeholder="اسم الفيلم أو المسلسل">
-      <div class="row">
-        <div><label>السنة</label><input type="text" id="f-year" placeholder="2024"></div>
-        <div><label>التقييم</label><input type="text" id="f-rating" placeholder="8.5"></div>
+
+      <div class="form-group">
+        <label>الاسم *</label>
+        <input type="text" id="f-name" placeholder="اسم الفيلم أو المسلسل">
       </div>
-      <div id="series-fields" style="display:none">
-        <div class="row">
-          <div><label>المواسم</label><input type="text" id="f-seasons" placeholder="3"></div>
-          <div><label>الحلقات</label><input type="text" id="f-episodes" placeholder="30"></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>السنة</label>
+          <input type="text" id="f-year" placeholder="2024">
+        </div>
+        <div class="form-group">
+          <label>التقييم (من 10)</label>
+          <input type="text" id="f-rating" placeholder="8.5">
         </div>
       </div>
-      <label>الوصف</label><textarea id="f-desc" placeholder="وصف مختصر..."></textarea>
-      <label>رابط المشاهدة *</label><input type="text" id="f-link" placeholder="https://...">
-      <label>رابط الصورة</label><input type="text" id="f-poster" placeholder="https://...poster.jpg">
-      <button class="add-btn" id="add-btn" onclick="addSingle()"><i class="ti ti-plus"></i> إضافة</button>
+
+      <div id="series-fields" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label>عدد المواسم</label>
+            <input type="text" id="f-seasons" placeholder="3">
+          </div>
+          <div class="form-group">
+            <label>عدد الحلقات</label>
+            <input type="text" id="f-episodes" placeholder="30">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>الوصف</label>
+        <textarea id="f-desc" placeholder="وصف مختصر للمحتوى..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>رابط المشاهدة / التحميل *</label>
+        <input type="text" id="f-link" placeholder="https://...">
+      </div>
+
+      <div class="form-group">
+        <label>رابط صورة البوستر</label>
+        <input type="text" id="f-poster" placeholder="https://...poster.jpg">
+      </div>
+
+      <button class="add-btn" id="add-btn" onclick="addSingle()">
+        <i class="ti ti-plus"></i> إضافة
+      </button>
     </div>
+
+    <!-- إضافة دفعة -->
     <div id="tab-bulk" style="display:none">
       <div class="bulk-box">
-        <div class="bulk-hint">📌 كل سطر = عنصر واحد:<br><strong>الاسم | السنة | التقييم | النوع | الرابط | الوصف</strong><br>النوع: movie أو series</div>
-        <textarea id="bulk-input" rows="8" placeholder="The Dark Knight | 2008 | 9.0 | movie | https://... | باتمان يواجه الجوكر
-Inception | 2010 | 8.8 | movie | https://... | رحلة داخل الأحلام"></textarea>
+        <div class="bulk-hint">
+          📌 كل سطر = عنصر واحد بالتنسيق:<br>
+          <strong>الاسم | السنة | التقييم | النوع | الرابط | الوصف</strong><br>
+          النوع: movie أو series
+        </div>
+        <textarea id="bulk-input" placeholder="The Dark Knight | 2008 | 9.0 | movie | https://... | باتمان يواجه الجوكر
+Inception | 2010 | 8.8 | movie | https://... | رحلة داخل الأحلام
+Breaking Bad | 2008 | 9.5 | series | https://... | كيميائي يصنع المخدرات"></textarea>
       </div>
-      <button class="add-btn" id="bulk-btn" onclick="addBulk()"><i class="ti ti-upload"></i> رفع الدفعة</button>
+      <button class="add-btn" id="bulk-btn" onclick="addBulk()">
+        <i class="ti ti-upload"></i> رفع الدفعة
+      </button>
     </div>
+
     <hr class="divider">
-    <div class="list-title">📦 المحتوى (<span id="list-count">0</span>)</div>
+    <div class="list-title">📦 المحتوى المضاف (<span id="list-count">0</span>)</div>
     <div id="adminList"></div>
   </div>
 </div>
 
+<!-- المودال -->
 <div class="overlay" id="overlay" onclick="closeModal(event)">
   <div class="modal">
-    <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('show')"><i class="ti ti-x"></i></button>
+    <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('show')">
+      <i class="ti ti-x"></i>
+    </button>
     <div class="modal-img" id="modal-img">🎬</div>
     <div class="modal-body">
       <div class="modal-title" id="modal-title"></div>
       <div class="modal-tags" id="modal-tags"></div>
       <div class="modal-desc" id="modal-desc"></div>
-      <a class="modal-link" id="modal-link" href="#" target="_blank"><i class="ti ti-player-play"></i> مشاهدة / تحميل</a>
+      <a class="modal-link" id="modal-link" href="#" target="_blank">
+        <i class="ti ti-player-play"></i> مشاهدة / تحميل
+      </a>
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL='https://gtgfxkqncfxoxyqgegzh.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Z2Z4a3FuY2Z4b3h5cWdlZ3poIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTY1NzcsImV4cCI6MjA5Mzk5MjU3N30.kYG_2W79ntRu04PXdvcWfXkkSUB5655A_Pu1mSZ5Cf8';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let db=[],activeFilter='all',addType='movie';
+const SUPABASE_URL = 'https://gtgfxkqncfxoxyqgegzh.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Z2Z4a3FuY2Z4b3h5cWdlZ3poIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODQxNjU3NywiZXhwIjoyMDkzOTkyNTc3fQ.uWfNRNdp0x5bh60xnFeNOpKrwpgzmREZ4Ou-Sv6sWfI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function loadData(){
-  const{data,error}=await sb.from('content').select('*').order('id',{ascending:false});
-  if(error){showToast('❌ خطأ في التحميل','error');return;}
-  db=data||[];filterContent();
+let db = [];
+let activeFilter = 'all';
+let addType = 'movie';
+
+// تحميل البيانات
+async function loadData() {
+  const { data, error } = await sb.from('content').select('*').order('id', { ascending: false });
+  if (error) { showToast('❌ خطأ في التحميل: ' + error.message, 'error'); return; }
+  db = data || [];
+  filterContent();
 }
 
-function showPage(p,btn){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');btn.classList.add('active');
-  if(p==='admin')renderAdmin();if(p==='user')filterContent();
+// التنقل بين الصفحات
+function showPage(p, btn) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  btn.classList.add('active');
+  if (p === 'admin') renderAdmin();
+  if (p === 'user') filterContent();
 }
 
-function setFilter(f,btn){activeFilter=f;document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');filterContent();}
+// الفلاتر
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+  filterContent();
+}
 
-function filterContent(){
-  const q=document.getElementById('searchInput').value.toLowerCase().trim();
-  let items=[...db];
-  if(activeFilter==='movie')items=items.filter(x=>x.type==='movie');
-  else if(activeFilter==='series')items=items.filter(x=>x.type==='series');
-  else if(activeFilter==='top')items=items.filter(x=>parseFloat(x.rating)>=8).sort((a,b)=>parseFloat(b.rating)-parseFloat(a.rating));
-  if(q)items=items.filter(x=>x.name?.toLowerCase().includes(q)||(x.description||'').toLowerCase().includes(q));
+function filterContent() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  let items = [...db];
+  if (activeFilter === 'movie') items = items.filter(x => x.type === 'movie');
+  else if (activeFilter === 'series') items = items.filter(x => x.type === 'series');
+  else if (activeFilter === 'top') items = items.filter(x => parseFloat(x.rating) >= 8).sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+  if (q) items = items.filter(x => (x.name || '').toLowerCase().includes(q) || (x.description || '').toLowerCase().includes(q));
   renderGrid(items);
 }
 
-function renderGrid(items){
-  const g=document.getElementById('contentGrid');
-  document.getElementById('count-badge').textContent=items.length+' عنصر';
-  if(!items.length){g.innerHTML='<div class="empty"><i class="ti ti-search"></i><div>لا توجد نتائج</div></div>';return;}
-  g.innerHTML=items.map(item=>`<div class="card" onclick="openModal(${item.id})">
-    <div class="card-poster">
-      ${item.poster?`<img src="${item.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:''}
-      <div class="card-emoji" ${item.poster?'style="display:none"':''}>${item.type==='movie'?'🎬':'📺'}</div>
-      <div class="badge ${item.type}">${item.type==='movie'?'فيلم':'مسلسل'}</div>
+// عرض البطاقات
+function renderGrid(items) {
+  const g = document.getElementById('contentGrid');
+  document.getElementById('count-badge').textContent = items.length + ' عنصر';
+  if (!items.length) {
+    g.innerHTML = '<div class="empty"><i class="ti ti-search"></i><div>لا توجد نتائج</div></div>';
+    return;
+  }
+  g.innerHTML = items.map(item => `
+    <div class="card" onclick="openModal(${item.id})">
+      <div class="card-poster">
+        ${item.poster ? `<img src="${item.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+        <div class="card-emoji" ${item.poster ? 'style="display:none"' : ''}>${item.type === 'movie' ? '🎬' : '📺'}</div>
+        <div class="badge ${item.type}">${item.type === 'movie' ? 'فيلم' : 'مسلسل'}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${item.name}</div>
+        <div class="card-meta">
+          ${item.year ? `<span>${item.year}</span>` : ''}
+          ${item.rating ? `<span class="star">⭐${item.rating}</span>` : ''}
+        </div>
+        <button class="watch-btn"><i class="ti ti-player-play"></i> مشاهدة</button>
+      </div>
     </div>
-    <div class="card-body">
-      <div class="card-name">${item.name}</div>
-      <div class="card-meta">${item.year?`<span>${item.year}</span>`:''}${item.rating?`<span class="star">⭐${item.rating}</span>`:''}</div>
-      <button class="watch-btn"><i class="ti ti-player-play"></i> مشاهدة</button>
-    </div></div>`).join('');
+  `).join('');
 }
 
-function openModal(id){
-  const item=db.find(x=>x.id===id);if(!item)return;
-  const img=document.getElementById('modal-img');
-  img.innerHTML=item.poster?`<img src="${item.poster}" onerror="this.parentNode.innerHTML='${item.type==='movie'?'🎬':'📺'}'">`:item.type==='movie'?'🎬':'📺';
-  document.getElementById('modal-title').textContent=item.name;
-  let tags=`<span class="tag type">${item.type==='movie'?'🎬 فيلم':'📺 مسلسل'}</span>`;
-  if(item.year)tags+=`<span class="tag">📅 ${item.year}</span>`;
-  if(item.rating)tags+=`<span class="tag">⭐ ${item.rating}/10</span>`;
-  if(item.seasons)tags+=`<span class="tag">📂 ${item.seasons} مواسم</span>`;
-  if(item.episodes)tags+=`<span class="tag">📋 ${item.episodes} حلقة</span>`;
-  document.getElementById('modal-tags').innerHTML=tags;
-  document.getElementById('modal-desc').textContent=item.description||'لا يوجد وصف';
-  document.getElementById('modal-link').href=item.link||'#';
+// فتح المودال
+function openModal(id) {
+  const item = db.find(x => x.id === id);
+  if (!item) return;
+  const img = document.getElementById('modal-img');
+  img.innerHTML = item.poster
+    ? `<img src="${item.poster}" onerror="this.parentNode.innerHTML='${item.type === 'movie' ? '🎬' : '📺'}'">` 
+    : (item.type === 'movie' ? '🎬' : '📺');
+  document.getElementById('modal-title').textContent = item.name;
+  let tags = `<span class="tag type">${item.type === 'movie' ? '🎬 فيلم' : '📺 مسلسل'}</span>`;
+  if (item.year) tags += `<span class="tag">📅 ${item.year}</span>`;
+  if (item.rating) tags += `<span class="tag">⭐ ${item.rating}/10</span>`;
+  if (item.seasons) tags += `<span class="tag">📂 ${item.seasons} مواسم</span>`;
+  if (item.episodes) tags += `<span class="tag">📋 ${item.episodes} حلقة</span>`;
+  document.getElementById('modal-tags').innerHTML = tags;
+  document.getElementById('modal-desc').textContent = item.description || 'لا يوجد وصف';
+  document.getElementById('modal-link').href = item.link || '#';
   document.getElementById('overlay').classList.add('show');
 }
 
-function closeModal(e){if(e.target===document.getElementById('overlay'))document.getElementById('overlay').classList.remove('show');}
-function setTab(t,btn){document.querySelectorAll('.add-switch .sw-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('tab-single').style.display=t==='single'?'block':'none';document.getElementById('tab-bulk').style.display=t==='bulk'?'block':'none';}
-function setType(t,btn){addType=t;document.querySelectorAll('.type-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('series-fields').style.display=t==='series'?'block':'none';}
-
-async function addSingle(){
-  const name=document.getElementById('f-name').value.trim(),link=document.getElementById('f-link').value.trim();
-  if(!name){showToast('⚠️ أدخل الاسم','error');return;}
-  if(!link){showToast('⚠️ أدخل الرابط','error');return;}
-  const btn=document.getElementById('add-btn');btn.disabled=true;btn.textContent='جاري الإضافة...';
-  const{error}=await sb.from('content').insert([{type:addType,name,year:document.getElementById('f-year').value.trim(),rating:document.getElementById('f-rating').value.trim(),description:document.getElementById('f-desc').value.trim(),link,poster:document.getElementById('f-poster').value.trim(),seasons:document.getElementById('f-seasons').value.trim(),episodes:document.getElementById('f-episodes').value.trim()}]);
-  btn.disabled=false;btn.innerHTML='<i class="ti ti-plus"></i> إضافة';
-  if(error){showToast('❌ خطأ في الإضافة','error');return;}
-  ['f-name','f-year','f-rating','f-desc','f-link','f-poster','f-seasons','f-episodes'].forEach(id=>document.getElementById(id).value='');
-  showToast('✅ تم الإضافة!','success');await loadData();renderAdmin();
+function closeModal(e) {
+  if (e.target === document.getElementById('overlay')) document.getElementById('overlay').classList.remove('show');
 }
 
-async function addBulk(){
-  const lines=document.getElementById('bulk-input').value.split('\n').filter(l=>l.trim());
-  const items=lines.map(line=>{const p=line.split('|').map(x=>x.trim());return p[0]&&p[4]?{name:p[0],year:p[1]||'',rating:p[2]||'',type:p[3]==='series'?'series':'movie',link:p[4],description:p[5]||'',poster:p[6]||''}:null;}).filter(Boolean);
-  if(!items.length){showToast('⚠️ تحقق من التنسيق','error');return;}
-  const btn=document.getElementById('bulk-btn');btn.disabled=true;btn.textContent=`جاري رفع ${items.length} عنصر...`;
-  const{error}=await sb.from('content').insert(items);
-  btn.disabled=false;btn.innerHTML='<i class="ti ti-upload"></i> رفع الدفعة';
-  if(error){showToast('❌ خطأ في الرفع','error');return;}
-  document.getElementById('bulk-input').value='';
-  showToast(`✅ تم إضافة ${items.length} عنصر!`,'success');await loadData();renderAdmin();
+// التبويبات
+function setTab(t, btn) {
+  document.querySelectorAll('.add-switch .sw-btn').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-single').style.display = t === 'single' ? 'block' : 'none';
+  document.getElementById('tab-bulk').style.display = t === 'bulk' ? 'block' : 'none';
 }
 
-async function deleteItem(id){
-  if(!confirm('هل تريد الحذف؟'))return;
-  const{error}=await sb.from('content').delete().eq('id',id);
-  if(error){showToast('❌ خطأ في الحذف','error');return;}
-  showToast('🗑️ تم الحذف','success');await loadData();renderAdmin();
+// تغيير النوع
+function setType(t) {
+  addType = t;
+  document.getElementById('btn-movie').classList.toggle('active', t === 'movie');
+  document.getElementById('btn-series').classList.toggle('active', t === 'series');
+  document.getElementById('series-fields').style.display = t === 'series' ? 'block' : 'none';
 }
 
-function renderAdmin(){
-  document.getElementById('s-movies').textContent=db.filter(x=>x.type==='movie').length;
-  document.getElementById('s-series').textContent=db.filter(x=>x.type==='series').length;
-  document.getElementById('s-total').textContent=db.length;
-  document.getElementById('list-count').textContent=db.length;
-  const list=document.getElementById('adminList');
-  if(!db.length){list.innerHTML='<div style="text-align:center;padding:30px;color:#555">لا يوجد محتوى بعد</div>';return;}
-  list.innerHTML=db.map(item=>`<div class="list-item"><div class="list-icon"><i class="ti ${item.type==='movie'?'ti-movie':'ti-device-tv'}"></i></div><div class="list-info"><div class="list-name">${item.name}</div><div class="list-sub">${item.type==='movie'?'فيلم':'مسلسل'}${item.year?' • '+item.year:''}${item.rating?' • ⭐'+item.rating:''}</div></div><button class="del-btn" onclick="deleteItem(${item.id})"><i class="ti ti-trash"></i></button></div>`).join('');
+// إضافة واحد
+async function addSingle() {
+  const name = document.getElementById('f-name').value.trim();
+  const link = document.getElementById('f-link').value.trim();
+  const year = document.getElementById('f-year').value.trim();
+  const rating = document.getElementById('f-rating').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const poster = document.getElementById('f-poster').value.trim();
+  const seasons = document.getElementById('f-seasons').value.trim();
+  const episodes = document.getElementById('f-episodes').value.trim();
+
+  if (!name) { showToast('⚠️ أدخل اسم المحتوى', 'error'); return; }
+  if (!link) { showToast('⚠️ أدخل رابط المشاهدة', 'error'); return; }
+
+  const btn = document.getElementById('add-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader"></i> جاري الإضافة...';
+
+  const { error } = await sb.from('content').insert([{
+    type: addType, name, year, rating,
+    description: desc, link, poster, seasons, episodes
+  }]);
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-plus"></i> إضافة';
+
+  if (error) {
+    showToast('❌ خطأ: ' + error.message, 'error');
+    return;
+  }
+
+  ['f-name','f-year','f-rating','f-desc','f-link','f-poster','f-seasons','f-episodes']
+    .forEach(id => document.getElementById(id).value = '');
+
+  showToast('✅ تم الإضافة بنجاح!', 'success');
+  await loadData();
+  renderAdmin();
 }
 
-function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.style.display='block';setTimeout(()=>t.style.display='none',2800);}
+// إضافة دفعة
+async function addBulk() {
+  const lines = document.getElementById('bulk-input').value.split('\n').filter(l => l.trim());
+  const items = [];
 
+  lines.forEach(line => {
+    const parts = line.split('|').map(x => x.trim());
+    if (parts[0] && parts[4]) {
+      items.push({
+        name: parts[0],
+        year: parts[1] || '',
+        rating: parts[2] || '',
+        type: parts[3] === 'series' ? 'series' : 'movie',
+        link: parts[4],
+        description: parts[5] || '',
+        poster: parts[6] || ''
+      });
+    }
+  });
+
+  if (!items.length) { showToast('⚠️ تحقق من التنسيق', 'error'); return; }
+
+  const btn = document.getElementById('bulk-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<i class="ti ti-loader"></i> جاري رفع ${items.length} عنصر...`;
+
+  const { error } = await sb.from('content').insert(items);
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-upload"></i> رفع الدفعة';
+
+  if (error) { showToast('❌ خطأ: ' + error.message, 'error'); return; }
+
+  document.getElementById('bulk-input').value = '';
+  showToast(`✅ تم إضافة ${items.length} عنصر!`, 'success');
+  await loadData();
+  renderAdmin();
+}
+
+// حذف
+async function deleteItem(id) {
+  if (!confirm('هل تريد حذف هذا العنصر؟')) return;
+  const { error } = await sb.from('content').delete().eq('id', id);
+  if (error) { showToast('❌ خطأ في الحذف', 'error'); return; }
+  showToast('🗑️ تم الحذف', 'success');
+  await loadData();
+  renderAdmin();
+}
+
+// عرض الإدارة
+function renderAdmin() {
+  document.getElementById('s-movies').textContent = db.filter(x => x.type === 'movie').length;
+  document.getElementById('s-series').textContent = db.filter(x => x.type === 'series').length;
+  document.getElementById('s-total').textContent = db.length;
+  document.getElementById('list-count').textContent = db.length;
+  const list = document.getElementById('adminList');
+  if (!db.length) {
+    list.innerHTML = '<div style="text-align:center;padding:30px;color:#555">لا يوجد محتوى بعد</div>';
+    return;
+  }
+  list.innerHTML = db.map(item => `
+    <div class="list-item">
+      <div class="list-icon"><i class="ti ${item.type === 'movie' ? 'ti-movie' : 'ti-device-tv'}"></i></div>
+      <div class="list-info">
+        <div class="list-name">${item.name}</div>
+        <div class="list-sub">${item.type === 'movie' ? 'فيلم' : 'مسلسل'}${item.year ? ' • ' + item.year : ''}${item.rating ? ' • ⭐' + item.rating : ''}</div>
+      </div>
+      <button class="del-btn" onclick="deleteItem(${item.id})"><i class="ti ti-trash"></i></button>
+    </div>
+  `).join('');
+}
+
+// التوست
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// تشغيل
 loadData();
 </script>
 </body>
