@@ -13,6 +13,7 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg);
@@ -28,9 +29,9 @@
         .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; }
         .logo span { color: var(--accent); }
 
-        /* Hero */
+        /* Hero Section */
         .hero {
-            height: 60vh; width: 100%; background-size: cover; background-position: center;
+            height: 55vh; width: 100%; background-size: cover; background-position: center;
             display: flex; align-items: flex-end; padding: 0 5% 40px; position: relative;
         }
         .hero::after {
@@ -38,29 +39,36 @@
             background: linear-gradient(to top, var(--bg), transparent);
         }
         .hero-info { position: relative; z-index: 2; max-width: 600px; }
-        .hero-info h1 { font-size: 1.8rem; margin: 0; }
+        .hero-info h1 { font-size: 1.8rem; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 
-        /* Rows */
+        /* Rows Layout */
         .row { padding: 0 0 0 5%; margin-bottom: 30px; }
         .row h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
 
         .posters-container {
             display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
         .posters-container::-webkit-scrollbar { display: none; }
 
-        /* Movie Card with Watch Overlay */
+        /* Movie Card Styles */
         .movie-card {
             min-width: 125px; position: relative; border-radius: 12px; overflow: hidden;
             transition: 0.3s ease; box-shadow: 0 8px 15px rgba(0,0,0,0.4);
         }
 
+        /* Mini Card for History */
+        .movie-card.mini {
+            min-width: 95px;
+            border-radius: 8px;
+        }
+
         .movie-card img { width: 100%; display: block; transition: 0.5s; }
 
-        /* طبقة "مشاهدة" تظهر عند اللمس/المرور */
+        /* Overlay Effect */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 0, 60, 0.4); 
+            background: rgba(229, 9, 20, 0.4); 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; transition: 0.3s;
         }
@@ -72,20 +80,22 @@
             display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
             margin-bottom: 8px; box-shadow: 0 0 15px rgba(255,255,255,0.5);
         }
-        .watch-text { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .mini .play-btn { width: 30px; height: 30px; font-size: 0.9rem; }
+        
+        .watch-text { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
         .rating-tag {
             position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8);
             padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; color: #ffc107; z-index: 5;
         }
 
-        /* Modal */
+        /* Player Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 2000; flex-direction: column;
         }
         iframe { width: 100%; height: 100%; border: none; }
-        .close-btn { padding: 15px; color: white; font-size: 1.1rem; cursor: pointer; background: #111; }
+        .close-btn { padding: 15px; color: white; font-size: 1rem; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
 
     </style>
 </head>
@@ -97,13 +107,13 @@
 
 <section class="hero" id="hero-section">
     <div class="hero-info">
-        <h1 id="hero-title">تحميل العروض...</h1>
+        <h1 id="hero-title">جاري تحميل أفضل العروض...</h1>
     </div>
 </section>
 
 <main>
     <div class="row" id="history-section" style="display:none;">
-        <h2>تابع من حيث توقفت 🕒</h2>
+        <h2 style="font-size: 0.9rem; color: #aaa;">تابع من حيث توقفت 🕒</h2>
         <div class="posters-container" id="history-row"></div>
     </div>
 
@@ -149,31 +159,33 @@
     const B_IMG = 'https://image.tmdb.org/t/p/original';
 
     async function fetchList(url, elementId, type = 'movie') {
-        const res = await fetch(`https://api.themoviedb.org/3${url}&api_key=${API_KEY}&language=ar&page=1`);
-        const data = await res.json();
-        const container = document.getElementById(elementId);
-        
-        data.results.forEach(m => {
-            if (!m.poster_path) return;
-            const card = document.createElement('div');
-            card.className = 'movie-card';
-            card.onclick = () => openPlayer(m.id, type, m.poster_path);
-            card.innerHTML = `
-                <div class="rating-tag">★ ${m.vote_average.toFixed(1)}</div>
-                <img src="${IMG + m.poster_path}" alt="poster">
-                <div class="overlay">
-                    <div class="play-btn">▶</div>
-                    <div class="watch-text">مشاهدة</div>
-                </div>
-            `;
-            container.appendChild(card);
-        });
+        try {
+            const res = await fetch(`https://api.themoviedb.org/3${url}&api_key=${API_KEY}&language=ar&page=1`);
+            const data = await res.json();
+            const container = document.getElementById(elementId);
+            
+            data.results.forEach(m => {
+                if (!m.poster_path) return;
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.onclick = () => openPlayer(m.id, type, m.poster_path);
+                card.innerHTML = `
+                    <div class="rating-tag">★ ${m.vote_average.toFixed(1)}</div>
+                    <img src="${IMG + m.poster_path}" alt="poster" loading="lazy">
+                    <div class="overlay">
+                        <div class="play-btn">▶</div>
+                        <div class="watch-text">مشاهدة</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
 
-        if (elementId === 'trending-row') {
-            const h = data.results[0];
-            document.getElementById('hero-section').style.backgroundImage = `url(${B_IMG + h.backdrop_path})`;
-            document.getElementById('hero-title').innerText = h.title || h.name;
-        }
+            if (elementId === 'trending-row' && data.results[0]) {
+                const h = data.results[0];
+                document.getElementById('hero-section').style.backgroundImage = `url(${B_IMG + h.backdrop_path})`;
+                document.getElementById('hero-title').innerText = h.title || h.name;
+            }
+        } catch (e) { console.error("Error fetching data"); }
     }
 
     function openPlayer(id, type, poster) {
@@ -187,21 +199,28 @@
         let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         history = history.filter(h => h.id !== id);
         history.unshift({id, type, poster});
-        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,10)));
+        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,12)));
         loadHistory();
     }
 
     function loadHistory() {
         const history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
+        const section = document.getElementById('history-section');
+        const row = document.getElementById('history-row');
+        
         if (history.length > 0) {
-            document.getElementById('history-section').style.display = 'block';
-            const row = document.getElementById('history-row');
+            section.style.display = 'block';
             row.innerHTML = '';
             history.forEach(m => {
                 const card = document.createElement('div');
-                card.className = 'movie-card';
+                card.className = 'movie-card mini';
                 card.onclick = () => openPlayer(m.id, m.type, m.poster);
-                card.innerHTML = `<img src="${IMG + m.poster}"><div class="overlay"><div class="play-btn">▶</div></div>`;
+                card.innerHTML = `
+                    <img src="${IMG + m.poster}">
+                    <div class="overlay">
+                        <div class="play-btn">▶</div>
+                    </div>
+                `;
                 row.appendChild(card);
             });
         }
