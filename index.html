@@ -10,14 +10,15 @@
             --accent: #ff003c;
             --bg: #040714;
             --card-bg: #1a1d29;
+            --text-color: #ffffff;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg);
-            color: white; margin: 0; overflow-x: hidden; width: 100%;
+            color: var(--text-color); margin: 0; overflow-x: hidden; width: 100%;
         }
 
         /* Navbar */
@@ -26,20 +27,35 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 15px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
         }
-        .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; }
+        .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        /* Hero Section */
+        /* Hero Section المعدلة مع زر التشغيل */
         .hero {
-            height: 55vh; width: 100%; background-size: cover; background-position: center;
-            display: flex; align-items: flex-end; padding: 0 5% 40px; position: relative;
+            height: 70vh; width: 100%; background-size: cover; background-position: center;
+            display: flex; align-items: center; padding: 0 5%; position: relative;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(4,7,20,0.8), transparent 60%);
         }
         .hero::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px;
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 200px;
             background: linear-gradient(to top, var(--bg), transparent);
         }
-        .hero-info { position: relative; z-index: 2; max-width: 600px; }
-        .hero-info h1 { font-size: 1.8rem; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .hero-info { position: relative; z-index: 2; max-width: 550px; margin-top: 50px; }
+        .hero-info h1 { font-size: 2.2rem; margin: 0 0 10px; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }
+        
+        /* زر التشغيل الرئيسي */
+        .hero-play-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background-color: white; color: black;
+            padding: 12px 25px; border-radius: 8px;
+            font-weight: 700; text-decoration: none;
+            margin-top: 15px; cursor: pointer;
+            transition: 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .hero-play-btn:hover { background-color: var(--accent); color: white; transform: scale(1.05); }
 
         /* Rows Layout */
         .row { padding: 0 0 0 5%; margin-bottom: 30px; }
@@ -51,70 +67,82 @@
         }
         .posters-container::-webkit-scrollbar { display: none; }
 
-        /* Movie Card Styles */
+        /* Movie Card العادية */
         .movie-card {
-            min-width: 125px; position: relative; border-radius: 12px; overflow: hidden;
+            min-width: 130px; position: relative; border-radius: 12px; overflow: hidden;
             transition: 0.3s ease; box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+            cursor: pointer;
         }
 
-        /* Mini Card for History */
+        /* --- تعديل: البوستر المصغر لقسم "تابع" --- */
         .movie-card.mini {
-            min-width: 95px;
-            border-radius: 8px;
+            min-width: 85px; /* تصغير حقيقي للعرض */
+            max-width: 85px;
+            border-radius: 6px; /* حواف أنعم تتناسب مع الحجم */
         }
 
         .movie-card img { width: 100%; display: block; transition: 0.5s; }
 
-        /* Overlay Effect */
+        /* Overlay */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(229, 9, 20, 0.4); 
+            background: linear-gradient(to top, rgba(229, 9, 20, 0.7), transparent); 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; transition: 0.3s;
         }
         .movie-card:hover .overlay, .movie-card:active .overlay { opacity: 1; }
-        .movie-card:hover img { transform: scale(1.1); filter: blur(2px); }
+        .movie-card:hover img { transform: scale(1.08); filter: blur(1px); }
 
-        .play-btn {
-            background: white; color: black; border-radius: 50%; width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-            margin-bottom: 8px; box-shadow: 0 0 15px rgba(255,255,255,0.5);
+        .play-icon {
+            background: white; color: black; border-radius: 50%; width: 35px; height: 35px;
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+            margin-bottom: 5px; box-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
-        .mini .play-btn { width: 30px; height: 30px; font-size: 0.9rem; }
+        /* تصغير الأيقونة في الكارت الميني */
+        .mini .play-icon { width: 25px; height: 25px; font-size: 0.7rem; margin-bottom: 2px; }
         
-        .watch-text { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .watch-text { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .mini .watch-text { font-size: 0.5rem; }
 
         .rating-tag {
             position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8);
-            padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; color: #ffc107; z-index: 5;
+            padding: 2px 5px; border-radius: 4px; font-size: 0.6rem; color: #ffc107; z-index: 5;
         }
 
-        /* Player Modal */
+        /* Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 2000; flex-direction: column;
         }
         iframe { width: 100%; height: 100%; border: none; }
-        .close-btn { padding: 15px; color: white; font-size: 1rem; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
+        .close-btn { padding: 12px; color: white; font-size: 0.9rem; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
 
+        @media (max-width: 600px) {
+            .hero { height: 50vh; padding: 0 20px; }
+            .hero-info h1 { font-size: 1.6rem; }
+            .hero-play-btn { padding: 10px 20px; font-size: 0.9rem; }
+            .movie-card { min-width: 110px; }
+            .movie-card.mini { min-width: 75px; max-width: 75px; }
+        }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">Exotic<span>N9</span></div>
+    <a href="#" class="logo">Exotic<span>N9</span></a>
 </nav>
 
 <section class="hero" id="hero-section">
     <div class="hero-info">
-        <h1 id="hero-title">جاري تحميل أفضل العروض...</h1>
+        <h1 id="hero-title">تحميل...</h1>
+        <div id="hero-play-container"></div>
     </div>
 </section>
 
 <main>
     <div class="row" id="history-section" style="display:none;">
-        <h2 style="font-size: 0.9rem; color: #aaa;">تابع من حيث توقفت 🕒</h2>
-        <div class="posters-container" id="history-row"></div>
+        <h2 style="font-size: 0.9rem; color: #aaa; border: none; padding: 0;">تابع من حيث توقفت 🕒</h2>
+        <div class="posters-container" id="history-row" style="gap: 8px;"></div>
     </div>
 
     <div class="row">
@@ -123,7 +151,7 @@
     </div>
 
     <div class="row">
-        <h2>أفلام الأكشن والإثارة 💥</h2>
+        <h2>أفلام الأكشن الإثارة 💥</h2>
         <div class="posters-container" id="action-row"></div>
     </div>
 
@@ -136,20 +164,10 @@
         <h2>عالم الأنمي 🐉</h2>
         <div class="posters-container" id="anime-row"></div>
     </div>
-
-    <div class="row">
-        <h2>أفلام الرعب 💀</h2>
-        <div class="posters-container" id="horror-row"></div>
-    </div>
-
-    <div class="row">
-        <h2>أفلام كوميدية 🍿</h2>
-        <div class="posters-container" id="comedy-row"></div>
-    </div>
 </main>
 
 <div class="modal" id="videoModal">
-    <div class="close-btn" onclick="closePlayer()">✕ إغلاق والعودة للقائمة</div>
+    <div class="close-btn" onclick="closePlayer()">✕ إغلاق</div>
     <div id="player-container" style="flex:1;"></div>
 </div>
 
@@ -173,7 +191,7 @@
                     <div class="rating-tag">★ ${m.vote_average.toFixed(1)}</div>
                     <img src="${IMG + m.poster_path}" alt="poster" loading="lazy">
                     <div class="overlay">
-                        <div class="play-btn">▶</div>
+                        <div class="play-icon">▶</div>
                         <div class="watch-text">مشاهدة</div>
                     </div>
                 `;
@@ -181,11 +199,26 @@
             });
 
             if (elementId === 'trending-row' && data.results[0]) {
-                const h = data.results[0];
-                document.getElementById('hero-section').style.backgroundImage = `url(${B_IMG + h.backdrop_path})`;
-                document.getElementById('hero-title').innerText = h.title || h.name;
+                updateHero(data.results[0], type);
             }
         } catch (e) { console.error("Error fetching data"); }
+    }
+
+    // تحديث الواجهة الرئيسية مع زر التشغيل
+    function updateHero(m, type) {
+        const heroSection = document.getElementById('hero-section');
+        const heroTitle = document.getElementById('hero-title');
+        const playContainer = document.getElementById('hero-play-container');
+
+        heroSection.style.backgroundImage = `url(${B_IMG + m.backdrop_path})`;
+        heroTitle.innerText = m.title || m.name;
+        
+        // إنشاء زر التشغيل برمجياً وربطه بالفيلم الأول
+        playContainer.innerHTML = `
+            <div class="hero-play-btn" onclick="openPlayer(${m.id}, '${type}', '${m.poster_path}')">
+                <span>▶</span> المشاهدة الآن
+            </div>
+        `;
     }
 
     function openPlayer(id, type, poster) {
@@ -199,10 +232,11 @@
         let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         history = history.filter(h => h.id !== id);
         history.unshift({id, type, poster});
-        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,12)));
+        localStorage.setItem('exoticHistory', JSON.stringify(history.slice(0,15)));
         loadHistory();
     }
 
+    // دالة تحميل التاريخ المصغرة
     function loadHistory() {
         const history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         const section = document.getElementById('history-section');
@@ -213,12 +247,12 @@
             row.innerHTML = '';
             history.forEach(m => {
                 const card = document.createElement('div');
-                card.className = 'movie-card mini';
+                card.className = 'movie-card mini'; // إضافة كلاس mini للتصغير
                 card.onclick = () => openPlayer(m.id, m.type, m.poster);
                 card.innerHTML = `
                     <img src="${IMG + m.poster}">
                     <div class="overlay">
-                        <div class="play-btn">▶</div>
+                        <div class="play-icon">▶</div>
                     </div>
                 `;
                 row.appendChild(card);
@@ -237,8 +271,6 @@
         fetchList('/discover/movie?with_genres=28', 'action-row');
         fetchList('/discover/tv?sort_by=popularity.desc', 'tv-row', 'tv');
         fetchList('/discover/movie?with_genres=16', 'anime-row');
-        fetchList('/discover/movie?with_genres=27', 'horror-row');
-        fetchList('/discover/movie?with_genres=35', 'comedy-row');
     };
 </script>
 </body>
