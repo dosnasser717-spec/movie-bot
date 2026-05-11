@@ -72,15 +72,9 @@
             transition: 0.3s ease; box-shadow: 0 8px 15px rgba(0,0,0,0.4);
             cursor: pointer;
         }
-
-        /* Mini Card (History) */
-        .movie-card.mini {
-            min-width: 85px; max-width: 85px; border-radius: 6px;
-        }
-
+        .movie-card.mini { min-width: 85px; max-width: 85px; border-radius: 6px; }
         .movie-card img { width: 100%; display: block; transition: 0.5s; }
 
-        /* Overlay */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(229, 9, 20, 0.7), transparent); 
@@ -97,7 +91,6 @@
         }
         .mini .play-icon { width: 25px; height: 25px; font-size: 0.7rem; }
 
-        /* زر الإزالة من المشاهدة */
         .remove-btn {
             position: absolute; top: 5px; right: 5px;
             background: rgba(0,0,0,0.8); color: white;
@@ -106,7 +99,6 @@
             font-size: 12px; font-weight: bold; z-index: 10;
             transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
         }
-        .remove-btn:hover { background: var(--accent); transform: scale(1.2); }
 
         .rating-tag {
             position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8);
@@ -148,18 +140,23 @@
     </div>
 
     <div class="row">
+        <h2>أفلام 2026 🆕</h2>
+        <div class="posters-container" id="2026-row"></div>
+    </div>
+
+    <div class="row">
+        <h2>أفلام 2025 🎬</h2>
+        <div class="posters-container" id="2025-row"></div>
+    </div>
+
+    <div class="row">
+        <h2>المسلسلات الأعلى مشاهدة 📈</h2>
+        <div class="posters-container" id="top-tv-row"></div>
+    </div>
+
+    <div class="row">
         <h2>الأكثر شهرة الآن 🔥</h2>
         <div class="posters-container" id="trending-row"></div>
-    </div>
-
-    <div class="row">
-        <h2>أفلام الأكشن 💥</h2>
-        <div class="posters-container" id="action-row"></div>
-    </div>
-
-    <div class="row">
-        <h2>مسلسلات مختارة 📺</h2>
-        <div class="posters-container" id="tv-row"></div>
     </div>
 
     <div class="row">
@@ -200,7 +197,7 @@
                 container.appendChild(card);
             });
 
-            if (elementId === 'trending-row' && data.results[0]) {
+            if (elementId === '2026-row' && data.results[0]) {
                 updateHero(data.results[0], type);
             }
         } catch (e) { console.error("Error fetching data"); }
@@ -236,9 +233,8 @@
         loadHistory();
     }
 
-    // دالة حذف فيلم محدد من القائمة
     function removeFromHistory(event, id) {
-        event.stopPropagation(); // منع فتح المشغل عند الضغط على زر الحذف
+        event.stopPropagation();
         let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         history = history.filter(h => h.id !== id);
         localStorage.setItem('exoticHistory', JSON.stringify(history));
@@ -266,9 +262,7 @@
                 `;
                 row.appendChild(card);
             });
-        } else {
-            section.style.display = 'none';
-        }
+        } else { section.style.display = 'none'; }
     }
 
     function closePlayer() {
@@ -278,9 +272,14 @@
 
     window.onload = () => {
         loadHistory();
+        // جلب أفلام 2026
+        fetchList('/discover/movie?primary_release_year=2026&sort_by=popularity.desc', '2026-row');
+        // جلب أفلام 2025
+        fetchList('/discover/movie?primary_release_year=2025&sort_by=popularity.desc', '2025-row');
+        // جلب المسلسلات الأعلى مشاهدة
+        fetchList('/tv/top_rated?', 'top-tv-row', 'tv');
+        // التصنيفات الأخرى
         fetchList('/trending/all/day?', 'trending-row');
-        fetchList('/discover/movie?with_genres=28', 'action-row');
-        fetchList('/discover/tv?sort_by=popularity.desc', 'tv-row', 'tv');
         fetchList('/discover/movie?with_genres=16', 'anime-row');
     };
 </script>
