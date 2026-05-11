@@ -33,7 +33,6 @@
         }
         .side-menu.active { right: 0; }
         .side-menu a { color: white; text-decoration: none; padding: 12px 0; display: block; border-bottom: 1px solid #111; font-size: 0.9rem; }
-        /* Style for Category Headers in Menu */
         .side-menu h3 { font-size: 0.8rem; color: var(--accent); margin-top: 20px; border-bottom: 1px solid #222; padding-bottom: 5px; }
 
         .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1040; display: none; }
@@ -61,21 +60,13 @@
 
         .remove-btn { position: absolute; top: 5px; left: 5px; background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 15; }
 
-        /* Modal Player & Server Switcher */
+        /* Modal Player */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
-        
-        .player-header { 
-            display: flex; align-items: center; justify-content: space-between; 
-            background: #111; padding: 10px 20px; border-bottom: 1px solid #333;
-        }
-        .server-btns { display: flex; gap: 10px; }
-        .server-btn { 
-            background: #222; color: white; border: 1px solid #444; 
-            padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;
-        }
+        .player-header { display: flex; align-items: center; justify-content: space-between; background: #111; padding: 10px 20px; border-bottom: 1px solid #333; overflow-x: auto; }
+        .server-btns { display: flex; gap: 8px; padding: 5px 0; }
+        .server-btn { background: #222; color: white; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; white-space: nowrap; }
         .server-btn.active { background: var(--accent); border-color: var(--accent); }
-        .close-btn { color: white; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
-        
+        .close-btn { color: white; cursor: pointer; font-weight: bold; font-size: 1.2rem; padding-right: 15px; }
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
@@ -91,13 +82,10 @@
 <div class="side-menu" id="sideMenu">
     <div style="padding-bottom:20px;"><input type="text" placeholder="ابحث عن فيلم أو مسلسل..." oninput="searchMedia(this.value)" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:10px; font-family:'Cairo';"></div>
     <a href="#" onclick="window.location.reload()">🏠 الرئيسية</a>
-    
     <h3>محتوى آسيوي وتركي</h3>
     <a href="#" onclick="filterByLang('tr', 'tv', 'مسلسلات تركية 🇹🇷')">🇹🇷 مسلسلات تركية</a>
     <a href="#" onclick="filterByLang('ko', 'tv', 'مسلسلات كورية 🇰🇷')">🇰🇷 مسلسلات كورية</a>
     <a href="#" onclick="filterByLang('zh', 'tv', 'مسلسلات صينية 🇨🇳')">🇨🇳 مسلسلات صينية</a>
-    <a href="#" onclick="filterByLang('ko', 'movie', 'أفلام كورية 🇰🇷')">🎬 أفلام كورية</a>
-
     <h3>تصنيفات</h3>
     <a href="#" onclick="filterByProvider(8, 'Netflix')">🔴 جديد نتفليكس</a>
     <a href="#" onclick="filterByGenre(28, 'أكشن')">💥 أفلام أكشن</a>
@@ -142,21 +130,11 @@
         } catch (e) {}
     }
 
-    // وظيفة جديدة للفلترة حسب اللغة لخدمة المحتوى التركي والكوري والصيني
     async function filterByLang(lang, type, title) {
         toggleMenu();
         const main = document.getElementById('dynamic-rows');
-        main.innerHTML = ''; // مسح الصفحة الرئيسية لعرض النتائج المختارة فقط
-        await fetchMegaList(`/discover/${type}?with_original_language=${lang}&sort_by=popularity.desc`, title, type);
-        window.scrollTo(0,0);
-    }
-
-    // المحافظة على الوظيفة الأساسية للفلترة حسب النوع
-    async function filterByGenre(id, title) {
-        toggleMenu();
-        const main = document.getElementById('dynamic-rows');
         main.innerHTML = '';
-        await fetchMegaList(`/discover/movie?with_genres=${id}`, title);
+        await fetchMegaList(`/discover/${type}?with_original_language=${lang}&sort_by=popularity.desc`, title, type);
         window.scrollTo(0,0);
     }
 
@@ -194,9 +172,12 @@
         const container = document.getElementById('player-container');
         const serverBox = document.getElementById('serverBox');
         
+        // تحديث السيرفرات وإضافة سيرفرات متخصصة
         const servers = [
-            { name: 'سيرفر 1', url: type === 'tv' ? `https://vidsrc.icu/embed/tv/${id}/1/1` : `https://vidsrc.icu/embed/movie/${id}` },
-            { name: 'سيرفر 2', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}` : `https://vidsrc.me/embed/movie?tmdb=${id}` }
+            { name: 'سيرفر الأساسي', url: type === 'tv' ? `https://vidsrc.icu/embed/tv/${id}/1/1` : `https://vidsrc.icu/embed/movie/${id}` },
+            { name: 'سيرفر VIP', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/1/1` : `https://vidsrc.to/embed/movie/${id}` },
+            { name: 'سيرفر آسيوي/تركي', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&sea=1&epi=1` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+            { name: 'سيرفر احتياطي', url: type === 'tv' ? `https://embed.su/embed/tv/${id}/1/1` : `https://embed.su/embed/movie/${id}` }
         ];
 
         serverBox.innerHTML = servers.map((s, i) => `<button class="server-btn ${num === i+1 ? 'active' : ''}" onclick="loadServer(${i+1})">${s.name}</button>`).join('');
@@ -238,15 +219,9 @@
     window.onload = async () => {
         loadHistory();
         await fetchMegaList('/movie/popular?', 'الأكثر شهرة عالمياً ✨');
-        
-        // إضافة الصفوف الجديدة في الصفحة الرئيسية
         await fetchMegaList('/discover/tv?with_original_language=tr&sort_by=popularity.desc', 'الدراما التركية 🇹🇷', 'tv');
         await fetchMegaList('/discover/tv?with_original_language=ko&sort_by=popularity.desc', 'المسلسلات الكورية 🇰🇷', 'tv');
         await fetchMegaList('/discover/tv?with_original_language=zh&sort_by=popularity.desc', 'المسلسلات الصينية 🇨🇳', 'tv');
-        
-        await fetchMegaList('/discover/movie?with_watch_providers=8&watch_region=SA&sort_by=primary_release_date.desc', 'جديد نتفليكس (Netflix) 🔴');
-        await fetchMegaList('/tv/popular?', 'ترند المسلسلات 📺', 'tv');
-        await fetchMegaList('/discover/movie?with_genres=28', 'أفلام الأكشن والإثارة 👊');
     };
 </script>
 </body>
