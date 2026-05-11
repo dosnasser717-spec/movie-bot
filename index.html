@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Bot</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <h1>🎬 Movie Bot</h1>
+  <input type="text" id="search" placeholder="ابحث عن فيلم أو مسلسل...">
+</header>
+
+<div id="movies" class="grid"></div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <span id="close">&times;</span>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="bot.js"></script>
+</body>
+</html>
