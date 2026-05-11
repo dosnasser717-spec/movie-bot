@@ -3,45 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExoticN9 | Mega Library</title>
+    <title>ExoticN9 | المحرك الشامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff003c; --bg: #040714; --nav-bg: rgba(4, 7, 20, 0.98); --text-color: #ffffff; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text-color); margin: 0; overflow-x: hidden; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        body {
+            font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text-color);
+            margin: 0; overflow-x: hidden; padding-top: 70px;
+        }
 
-        /* Navbar */
-        nav { background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); display: flex; align-items: center; justify-content: space-between; padding: 15px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
-        .logo { font-size: 1.6rem; font-weight: 800; color: white; text-decoration: none; }
+        /* Nav */
+        nav {
+            background: var(--nav-bg); display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: white; text-decoration: none; }
         .logo span { color: var(--accent); }
-        .menu-toggle { cursor: pointer; padding: 10px; z-index: 1200; }
-        .menu-toggle span { display: block; width: 25px; height: 3px; background: white; margin: 5px; border-radius: 2px; }
+        .menu-toggle { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 10px; }
+        .menu-toggle span { display: block; width: 25px; height: 3px; background: white; border-radius: 2px; }
 
         /* Side Menu */
-        .side-menu { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--nav-bg); z-index: 1050; display: flex; flex-direction: column; padding: 80px 25px; transition: 0.4s; overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.8); }
+        .side-menu {
+            position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
+            background: var(--nav-bg); z-index: 1050; display: flex; flex-direction: column;
+            padding: 80px 25px; transition: 0.4s; overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+        }
         .side-menu.active { right: 0; }
-        .search-container input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333; background: #111; color: white; margin-bottom: 20px; }
-        .side-menu h3 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-top: 15px; }
-        .side-menu a { color: white; text-decoration: none; padding: 12px 0; display: block; border-bottom: 1px solid #222; font-weight: 600; }
+        .search-container input {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333;
+            background: #111; color: white; margin-bottom: 20px; font-family: 'Cairo';
+        }
+        .side-menu h3 { font-size: 0.8rem; color: var(--accent); margin-top: 15px; border-bottom: 1px solid #222; }
+        .side-menu a { color: white; text-decoration: none; padding: 10px 0; display: block; font-weight: 600; font-size: 0.95rem; }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1040; display: none; }
+        .overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1040; display: none; }
 
         /* Rows */
-        .row { padding: 20px 0 0 5%; }
-        .row h2 { font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .row h2::after { content: ''; height: 2px; flex: 1; background: linear-gradient(to left, #333, transparent); margin-right: 10px; }
+        .row { padding: 15px 0 0 5%; }
+        .row h2 { font-size: 1rem; margin-bottom: 12px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .row h2::before { content: ''; width: 4px; height: 18px; background: var(--accent); border-radius: 2px; }
+        
         .posters { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; scrollbar-width: none; }
         .posters::-webkit-scrollbar { display: none; }
-        
-        .movie-card { min-width: 110px; border-radius: 8px; overflow: hidden; position: relative; background: #111; transition: 0.3s; }
-        .movie-card img { width: 100%; height: 165px; object-fit: cover; display: block; }
-        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+
+        .movie-card { min-width: 115px; border-radius: 10px; overflow: hidden; position: relative; background: #111; transition: 0.3s; }
+        .movie-card img { width: 100%; height: 170px; object-fit: cover; display: block; }
+        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
         .movie-card:hover { transform: translateY(-5px); }
         .movie-card:hover .card-overlay { opacity: 1; }
         
-        .remove-btn { position: absolute; top: 4px; left: 4px; background: var(--accent); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; z-index: 10; }
+        .remove-btn { position: absolute; top: 4px; left: 4px; background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 10; }
 
-        /* Modal Player */
+        /* Player */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
         .close-btn { padding: 15px; color: white; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
         iframe { width: 100%; height: 100%; border: none; }
@@ -49,29 +65,39 @@
 </head>
 <body>
 
-<nav><a href="#" class="logo">Exotic<span>N9</span></a><div class="menu-toggle" onclick="toggleMenu()"><span></span><span></span><span></span></div></nav>
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<nav>
+    <a href="#" class="logo" onclick="window.location.reload()">Exotic<span>N9</span></a>
+    <div class="menu-toggle" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="overlay-bg" id="overlay" onclick="toggleMenu()"></div>
 
 <div class="side-menu" id="sideMenu">
-    <div class="search-container"><input type="text" placeholder="ابحث عن أي فيلم..." oninput="searchMedia(this.value)"></div>
+    <div class="search-container"><input type="text" placeholder="بحث شامل..." oninput="searchMedia(this.value)"></div>
     <a href="#" onclick="window.location.reload()">الرئيسية</a>
-    <h3>تصنيفات ضخمة</h3>
-    <a href="#" onclick="filterByGenre(28, 'أكشن ومغامرة')">أكشن ومغامرة</a>
-    <a href="#" onclick="filterByGenre(27, 'رعب وإثارة')">رعب وإثارة</a>
-    <a href="#" onclick="filterByGenre(878, 'خيال علمي')">خيال علمي</a>
-    <a href="#" onclick="filterByGenre(16, 'أنمي وكرتون')">أنمي وكرتون</a>
-    <a href="#" onclick="filterByGenre(10751, 'أفلام عائلية')">أفلام عائلية</a>
+    
+    <h3>منصات عالمية</h3>
+    <a href="#" onclick="filterByProvider(8, 'Netflix')">جديد نتفليكس</a>
+    <a href="#" onclick="filterByProvider(119, 'Prime Video')">أمازون برايم</a>
+    <a href="#" onclick="filterByProvider(337, 'Disney+')">ديزني بلس</a>
+    
+    <h3>تصنيفات</h3>
+    <a href="#" onclick="filterByGenre(28, 'أكشن')">أفلام أكشن</a>
+    <a href="#" onclick="filterByGenre(27, 'رعب')">أفلام رعب</a>
+    <a href="#" onclick="filterByGenre(16, 'أنمي')">أنمي وكرتون</a>
 </div>
 
-<main id="main-content" style="padding-top: 70px;">
+<main id="main-content">
     <div class="row" id="search-section" style="display:none;"><h2>نتائج البحث 🔍</h2><div class="posters" id="search-row"></div></div>
-    <div class="row" id="history-section" style="display:none;"><h2>تابع المشاهدة 🕒</h2><div class="posters" id="history-row"></div></div>
-    
+    <div class="row" id="history-section" style="display:none;"><h2>أكمل المشاهدة 🕒</h2><div class="posters" id="history-row"></div></div>
+
     <div id="dynamic-rows">
+        <div class="row"><h2>أحدث الإضافات العالمية ✨</h2><div class="posters" id="row-latest"></div></div>
+        <div class="row"><h2>جديد نتفليكس (Netflix) 🔴</h2><div class="posters" id="row-netflix"></div></div>
         <div class="row"><h2>أفلام 2026 🔥</h2><div class="posters" id="row-2026"></div></div>
-        <div class="row"><h2>مسلسلات ترند 📺</h2><div class="posters" id="row-tv"></div></div>
-        <div class="row"><h2>أكشن ممتع 👊</h2><div class="posters" id="row-action"></div></div>
-        <div class="row"><h2>عشاق الرعب 💀</h2><div class="posters" id="row-horror"></div></div>
+        <div class="row"><h2>مسلسلات ترند حالياً 📺</h2><div class="posters" id="row-tv"></div></div>
+        <div class="row"><h2>ديزني وأفلام العائلة 🏰</h2><div class="posters" id="row-disney"></div></div>
+        <div class="row"><h2>أفلام الرعب والإثارة 💀</h2><div class="posters" id="row-horror"></div></div>
     </div>
 </main>
 
@@ -87,18 +113,17 @@
         document.getElementById('overlay').style.display = menu.classList.contains('active') ? 'block' : 'none';
     }
 
-    // وظيفة جلب كمية كبيرة من الأفلام (صفحتين بدلاً من واحدة)
+    // جلب كميات ضخمة (4 صفحات لكل قسم)
     async function fetchMegaList(url, elementId, type = 'movie') {
         const container = document.getElementById(elementId);
-        try {
-            for (let page = 1; page <= 3; page++) { // جلب 3 صفحات (حوالي 60 فيلم لكل قسم)
+        if (!container) return;
+        for (let page = 1; page <= 4; page++) {
+            try {
                 const res = await fetch(`https://api.themoviedb.org/3${url}&api_key=${API_KEY}&language=ar&page=${page}`);
                 const data = await res.json();
-                data.results.forEach(m => {
-                    if (m.poster_path) container.appendChild(createCard(m, type));
-                });
-            }
-        } catch (e) {}
+                data.results.forEach(m => { if (m.poster_path) container.appendChild(createCard(m, type)); });
+            } catch (e) {}
+        }
     }
 
     async function searchMedia(query) {
@@ -109,6 +134,15 @@
         const data = await res.json();
         section.style.display = 'block'; row.innerHTML = '';
         data.results.forEach(m => { if(m.poster_path) row.appendChild(createCard(m, m.media_type || 'movie')); });
+    }
+
+    // فلترة حسب المنصة (Netflix, Disney, etc)
+    async function filterByProvider(providerId, name) {
+        toggleMenu();
+        const container = document.getElementById('dynamic-rows');
+        container.innerHTML = `<div class="row"><h2>محتوى ${name} 🎬</h2><div class="posters" id="filter-row"></div></div>`;
+        await fetchMegaList(`/discover/movie?with_watch_providers=${providerId}&watch_region=SA`, 'filter-row');
+        window.scrollTo(0, 0);
     }
 
     async function filterByGenre(id, name) {
@@ -157,9 +191,9 @@
         if (history.length > 0) {
             section.style.display = 'block'; row.innerHTML = '';
             history.forEach(m => {
-                const card = document.createElement('div'); card.className = 'movie-card'; card.style.minWidth = '90px';
+                const card = document.createElement('div'); card.className = 'movie-card'; card.style.minWidth = '95px';
                 card.onclick = () => openPlayer(m.id, m.type, m.poster);
-                card.innerHTML = `<div class="remove-btn" onclick="removeFromHistory(event, ${m.id})">✕</div><img src="${IMG + m.poster}" style="height:130px"><div class="card-overlay">▶</div>`;
+                card.innerHTML = `<div class="remove-btn" onclick="removeFromHistory(event, ${m.id})">✕</div><img src="${IMG + m.poster}" style="height:140px"><div class="card-overlay">▶</div>`;
                 row.appendChild(card);
             });
         } else { section.style.display = 'none'; }
@@ -169,11 +203,14 @@
 
     window.onload = () => {
         loadHistory();
-        fetchMegaList('/discover/movie?primary_release_year=2026&sort_by=popularity.desc', 'row-2026');
+        // جلب البيانات لجميع الأقسام
+        fetchMegaList('/movie/now_playing?', 'row-latest');
+        fetchMegaList('/discover/movie?with_watch_providers=8&watch_region=SA', 'row-netflix');
+        fetchMegaList('/discover/movie?primary_release_year=2026', 'row-2026');
         fetchMegaList('/tv/popular?', 'row-tv', 'tv');
-        fetchMegaList('/discover/movie?with_genres=28', 'row-action');
+        fetchMegaList('/discover/movie?with_watch_providers=337&watch_region=SA', 'row-disney');
         fetchMegaList('/discover/movie?with_genres=27', 'row-horror');
     };
 </script>
 </body>
-</html>
+</html>ض
