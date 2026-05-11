@@ -30,9 +30,9 @@
         .logo { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: 1px; text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        /* Hero Section المعدلة مع زر التشغيل */
+        /* Hero Section */
         .hero {
-            height: 70vh; width: 100%; background-size: cover; background-position: center;
+            height: 65vh; width: 100%; background-size: cover; background-position: center;
             display: flex; align-items: center; padding: 0 5%; position: relative;
         }
         .hero::before {
@@ -46,7 +46,6 @@
         .hero-info { position: relative; z-index: 2; max-width: 550px; margin-top: 50px; }
         .hero-info h1 { font-size: 2.2rem; margin: 0 0 10px; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }
         
-        /* زر التشغيل الرئيسي */
         .hero-play-btn {
             display: inline-flex; align-items: center; gap: 10px;
             background-color: white; color: black;
@@ -57,7 +56,7 @@
         }
         .hero-play-btn:hover { background-color: var(--accent); color: white; transform: scale(1.05); }
 
-        /* Rows Layout */
+        /* Rows */
         .row { padding: 0 0 0 5%; margin-bottom: 30px; }
         .row h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
 
@@ -67,18 +66,16 @@
         }
         .posters-container::-webkit-scrollbar { display: none; }
 
-        /* Movie Card العادية */
+        /* Movie Card */
         .movie-card {
             min-width: 130px; position: relative; border-radius: 12px; overflow: hidden;
             transition: 0.3s ease; box-shadow: 0 8px 15px rgba(0,0,0,0.4);
             cursor: pointer;
         }
 
-        /* --- تعديل: البوستر المصغر لقسم "تابع" --- */
+        /* Mini Card (History) */
         .movie-card.mini {
-            min-width: 85px; /* تصغير حقيقي للعرض */
-            max-width: 85px;
-            border-radius: 6px; /* حواف أنعم تتناسب مع الحجم */
+            min-width: 85px; max-width: 85px; border-radius: 6px;
         }
 
         .movie-card img { width: 100%; display: block; transition: 0.5s; }
@@ -96,13 +93,20 @@
         .play-icon {
             background: white; color: black; border-radius: 50%; width: 35px; height: 35px;
             display: flex; align-items: center; justify-content: center; font-size: 1rem;
-            margin-bottom: 5px; box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            margin-bottom: 5px;
         }
-        /* تصغير الأيقونة في الكارت الميني */
-        .mini .play-icon { width: 25px; height: 25px; font-size: 0.7rem; margin-bottom: 2px; }
-        
-        .watch-text { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-        .mini .watch-text { font-size: 0.5rem; }
+        .mini .play-icon { width: 25px; height: 25px; font-size: 0.7rem; }
+
+        /* زر الإزالة من المشاهدة */
+        .remove-btn {
+            position: absolute; top: 5px; right: 5px;
+            background: rgba(0,0,0,0.8); color: white;
+            width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold; z-index: 10;
+            transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .remove-btn:hover { background: var(--accent); transform: scale(1.2); }
 
         .rating-tag {
             position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8);
@@ -118,9 +122,7 @@
         .close-btn { padding: 12px; color: white; font-size: 0.9rem; cursor: pointer; background: #111; text-align: center; font-weight: bold; }
 
         @media (max-width: 600px) {
-            .hero { height: 50vh; padding: 0 20px; }
-            .hero-info h1 { font-size: 1.6rem; }
-            .hero-play-btn { padding: 10px 20px; font-size: 0.9rem; }
+            .hero { height: 50vh; }
             .movie-card { min-width: 110px; }
             .movie-card.mini { min-width: 75px; max-width: 75px; }
         }
@@ -151,7 +153,7 @@
     </div>
 
     <div class="row">
-        <h2>أفلام الأكشن الإثارة 💥</h2>
+        <h2>أفلام الأكشن 💥</h2>
         <div class="posters-container" id="action-row"></div>
     </div>
 
@@ -204,7 +206,6 @@
         } catch (e) { console.error("Error fetching data"); }
     }
 
-    // تحديث الواجهة الرئيسية مع زر التشغيل
     function updateHero(m, type) {
         const heroSection = document.getElementById('hero-section');
         const heroTitle = document.getElementById('hero-title');
@@ -213,7 +214,6 @@
         heroSection.style.backgroundImage = `url(${B_IMG + m.backdrop_path})`;
         heroTitle.innerText = m.title || m.name;
         
-        // إنشاء زر التشغيل برمجياً وربطه بالفيلم الأول
         playContainer.innerHTML = `
             <div class="hero-play-btn" onclick="openPlayer(${m.id}, '${type}', '${m.poster_path}')">
                 <span>▶</span> المشاهدة الآن
@@ -236,7 +236,15 @@
         loadHistory();
     }
 
-    // دالة تحميل التاريخ المصغرة
+    // دالة حذف فيلم محدد من القائمة
+    function removeFromHistory(event, id) {
+        event.stopPropagation(); // منع فتح المشغل عند الضغط على زر الحذف
+        let history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
+        history = history.filter(h => h.id !== id);
+        localStorage.setItem('exoticHistory', JSON.stringify(history));
+        loadHistory();
+    }
+
     function loadHistory() {
         const history = JSON.parse(localStorage.getItem('exoticHistory')) || [];
         const section = document.getElementById('history-section');
@@ -247,9 +255,10 @@
             row.innerHTML = '';
             history.forEach(m => {
                 const card = document.createElement('div');
-                card.className = 'movie-card mini'; // إضافة كلاس mini للتصغير
+                card.className = 'movie-card mini';
                 card.onclick = () => openPlayer(m.id, m.type, m.poster);
                 card.innerHTML = `
+                    <div class="remove-btn" onclick="removeFromHistory(event, ${m.id})">✕</div>
                     <img src="${IMG + m.poster}">
                     <div class="overlay">
                         <div class="play-icon">▶</div>
@@ -257,6 +266,8 @@
                 `;
                 row.appendChild(card);
             });
+        } else {
+            section.style.display = 'none';
         }
     }
 
